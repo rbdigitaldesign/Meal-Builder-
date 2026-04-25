@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { NutritionalTarget, DailyLog } from "@/lib/types";
 import { calculateDailyTotals, buildNutrientSummaries } from "@/lib/nutrition";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { useEnergyUnit } from "@/lib/useEnergyUnit";
 
 interface Props {
   targets: NutritionalTarget[];
@@ -12,6 +13,7 @@ interface Props {
 
 export function DailyProgressStrip({ targets, dailyLog }: Props) {
   const [showAll, setShowAll] = useState(false);
+  const { unit, toggle: toggleUnit, display: displayEnergy } = useEnergyUnit();
 
   const totals = calculateDailyTotals(dailyLog);
   const summaries = buildNutrientSummaries(totals, targets);
@@ -34,14 +36,25 @@ export function DailyProgressStrip({ targets, dailyLog }: Props) {
   return (
     <div className="bg-white border-b border-brand-warm px-4 py-3">
       <div className="max-w-2xl mx-auto">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">
-            Today's Progress
-          </p>
+        <div className="flex items-center justify-between mb-2 gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">
+              Today's Progress
+            </p>
+            {/* Energy unit toggle pill */}
+            <button
+              onClick={toggleUnit}
+              className="flex items-center rounded-full border border-brand-warm bg-stone-50 text-[11px] font-medium overflow-hidden"
+              title="Switch energy units"
+            >
+              <span className={`px-2 py-0.5 transition-colors ${unit === "kcal" ? "bg-brand-olive text-white" : "text-stone-400"}`}>kcal</span>
+              <span className={`px-2 py-0.5 transition-colors ${unit === "kJ"   ? "bg-brand-olive text-white" : "text-stone-400"}`}>kJ</span>
+            </button>
+          </div>
           {recommended.length > 0 && (
             <button
               onClick={() => setShowAll((v) => !v)}
-              className="text-xs text-brand-olive hover:underline"
+              className="text-xs text-brand-olive hover:underline flex-shrink-0"
             >
               {showAll ? "Show less ↑" : "Show all ↓"}
             </button>
@@ -66,7 +79,7 @@ export function DailyProgressStrip({ targets, dailyLog }: Props) {
                       {s.label}
                     </span>
                     <span className="text-xs text-stone-400 tabular-nums">
-                      {s.consumed}{s.unit} / {s.target}{s.unit}
+                      {s.nutrient === "calories" ? `${displayEnergy(s.consumed)} / ${displayEnergy(s.target)}` : `${s.consumed}${s.unit} / ${s.target}${s.unit}`}
                       <span className={`ml-1.5 font-medium ${
                         s.status === "met" || s.status === "exceeded"
                           ? "text-brand-olive"

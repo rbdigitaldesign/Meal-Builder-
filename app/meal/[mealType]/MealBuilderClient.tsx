@@ -92,23 +92,16 @@ export default function MealBuilderClient({ params }: PageProps) {
           ← Dashboard
         </Link>
         <h1 className="flex-1 text-center font-semibold text-brand-forest">{label}</h1>
-        <div className="flex items-center gap-2">
+        {/* Sync status only — Clear moved to bottom to avoid accidental taps */}
+        <div className="w-16 text-right">
           {isSupabasePatient && syncStatus !== "idle" && (
-            <span className={`text-xs transition-opacity ${
+            <span className={`text-xs ${
               syncStatus === "saving" ? "text-stone-400" :
               syncStatus === "saved"  ? "text-brand-olive" :
               "text-red-400"
             }`}>
-              {syncStatus === "saving" ? "Saving…" : syncStatus === "saved" ? "Saved ✓" : "Save failed"}
+              {syncStatus === "saving" ? "Saving…" : syncStatus === "saved" ? "Saved ✓" : "Failed"}
             </span>
-          )}
-          {items.length > 0 && (
-            <button
-              onClick={() => clearMeal(mealType)}
-              className="text-xs text-stone-400 hover:text-red-500 transition-colors"
-            >
-              Clear
-            </button>
           )}
         </div>
       </div>
@@ -163,10 +156,20 @@ export default function MealBuilderClient({ params }: PageProps) {
           />
         )}
 
-        <div className="pb-6">
+        <div className="pb-6 space-y-3">
           <Button onClick={() => router.push("/dashboard")} className="w-full">
             Save &amp; Back to Dashboard
           </Button>
+          {items.length > 0 && (
+            <button
+              onClick={() => {
+                if (confirm(`Clear all items from ${label}?`)) clearMeal(mealType);
+              }}
+              className="w-full py-2 text-sm text-red-500 border border-red-200 rounded-xl hover:bg-red-50 transition-colors"
+            >
+              ↺ Clear this meal
+            </button>
+          )}
         </div>
       </div>
     </div>
