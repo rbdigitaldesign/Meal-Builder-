@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { DietaryRestriction, NutritionalTarget, PatientProfile } from "@/lib/types";
 import { useProfileStore } from "@/store/profileStore";
 import { getDefaultTargets } from "@/data/defaultTargets";
+import { getPresetsForProfile, applyPresetsToTargets } from "@/lib/presets";
 import { PatientInfoStep } from "@/components/clinician/PatientInfoStep";
 import { DietaryRestrictionsStep } from "@/components/clinician/DietaryRestrictionsStep";
 import { ConditionsStep } from "@/components/clinician/ConditionsStep";
@@ -24,6 +25,7 @@ export default function ClinicianPage() {
   const [restrictions, setRestrictions] = useState<DietaryRestriction[]>([]);
   const [conditionTags, setConditionTags] = useState<string[]>([]);
   const [targets, setTargets] = useState<NutritionalTarget[]>(() => getDefaultTargets([]));
+  const [autoPresets, setAutoPresets] = useState<string[]>([]);
 
   function handleRestrictionsNext() {
     setTargets(getDefaultTargets(restrictions));
@@ -31,6 +33,11 @@ export default function ClinicianPage() {
   }
 
   function handleConditionsNext() {
+    const presetIds = getPresetsForProfile(conditionTags, restrictions);
+    setAutoPresets(presetIds);
+    if (presetIds.length > 0) {
+      setTargets((prev) => applyPresetsToTargets(prev, presetIds));
+    }
     setStep(3);
   }
 
@@ -118,6 +125,7 @@ export default function ClinicianPage() {
             onChange={setTargets}
             onNext={() => setStep(4)}
             onBack={() => setStep(2)}
+            initialActivePresets={autoPresets}
           />
         )}
         {step === 4 && (

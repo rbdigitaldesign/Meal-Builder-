@@ -3,67 +3,11 @@
 import { useState } from "react";
 import type { NutritionalTarget, NutrientKey } from "@/lib/types";
 import { NUTRIENT_LABELS, NUTRIENT_UNITS } from "@/lib/types";
+import { FOCUS_PRESETS, applyPresetsToTargets } from "@/lib/presets";
 import { Button } from "@/components/ui/Button";
 
 const EDITABLE_NUTRIENTS: NutrientKey[] = [
   "calories", "protein", "iron", "calcium", "vitaminB12", "zinc", "vitaminC", "fiber",
-];
-
-interface PresetAdjustment {
-  nutrient: NutrientKey;
-  dailyTarget: number;
-  priority: "critical" | "recommended";
-}
-
-const FOCUS_PRESETS: { id: string; label: string; adjustments: PresetAdjustment[] }[] = [
-  {
-    id: "iron-deficiency",
-    label: "Iron Deficiency",
-    adjustments: [
-      { nutrient: "iron",     dailyTarget: 18, priority: "critical" },
-      { nutrient: "vitaminC", dailyTarget: 90, priority: "critical" },
-    ],
-  },
-  {
-    id: "b12-deficiency",
-    label: "B12 Deficiency",
-    adjustments: [
-      { nutrient: "vitaminB12", dailyTarget: 2.4, priority: "critical" },
-    ],
-  },
-  {
-    id: "zinc-deficiency",
-    label: "Zinc Deficiency",
-    adjustments: [
-      { nutrient: "zinc", dailyTarget: 11, priority: "critical" },
-    ],
-  },
-  {
-    id: "calcium-deficiency",
-    label: "Calcium Deficiency",
-    adjustments: [
-      { nutrient: "calcium", dailyTarget: 1200, priority: "critical" },
-    ],
-  },
-  {
-    id: "vegetarian",
-    label: "Vegetarian",
-    adjustments: [
-      { nutrient: "iron",       dailyTarget: 18,  priority: "critical" },
-      { nutrient: "vitaminB12", dailyTarget: 2.4, priority: "critical" },
-      { nutrient: "zinc",       dailyTarget: 11,  priority: "recommended" },
-    ],
-  },
-  {
-    id: "vegan",
-    label: "Vegan",
-    adjustments: [
-      { nutrient: "iron",       dailyTarget: 32,   priority: "critical" },
-      { nutrient: "vitaminB12", dailyTarget: 2.4,  priority: "critical" },
-      { nutrient: "calcium",    dailyTarget: 1200, priority: "critical" },
-      { nutrient: "zinc",       dailyTarget: 11,   priority: "recommended" },
-    ],
-  },
 ];
 
 interface Props {
@@ -72,10 +16,11 @@ interface Props {
   onNext: () => void;
   onBack: () => void;
   submitLabel?: string;
+  initialActivePresets?: string[];
 }
 
-export function NutritionalGoalsStep({ targets, onChange, onNext, onBack, submitLabel = "Review" }: Props) {
-  const [activePresets, setActivePresets] = useState<Set<string>>(new Set());
+export function NutritionalGoalsStep({ targets, onChange, onNext, onBack, submitLabel = "Review", initialActivePresets = [] }: Props) {
+  const [activePresets, setActivePresets] = useState<Set<string>>(new Set(initialActivePresets));
 
   function applyPreset(presetId: string) {
     const preset = FOCUS_PRESETS.find((p) => p.id === presetId);
@@ -86,7 +31,6 @@ export function NutritionalGoalsStep({ targets, onChange, onNext, onBack, submit
 
     if (isActive) {
       nextActive.delete(presetId);
-      // Revert nutrients that are ONLY used by this preset
       const otherActive = [...nextActive];
       const stillNeeded = new Set(
         otherActive.flatMap((id) => FOCUS_PRESETS.find((p) => p.id === id)?.adjustments.map((a) => a.nutrient) ?? [])
@@ -102,12 +46,7 @@ export function NutritionalGoalsStep({ targets, onChange, onNext, onBack, submit
       );
     } else {
       nextActive.add(presetId);
-      onChange(
-        targets.map((t) => {
-          const adj = preset.adjustments.find((a) => a.nutrient === t.nutrient);
-          return adj ? { ...t, dailyTarget: adj.dailyTarget, priority: adj.priority } : t;
-        })
-      );
+      onChange(applyPresetsToTargets(targets, [presetId]));
     }
 
     setActivePresets(nextActive);

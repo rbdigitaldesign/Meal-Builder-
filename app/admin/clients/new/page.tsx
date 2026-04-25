@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getDefaultTargets } from "@/data/defaultTargets";
+import { getPresetsForProfile, applyPresetsToTargets } from "@/lib/presets";
 import type { DietaryRestriction, NutritionalTarget } from "@/lib/types";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { PatientInfoStep } from "@/components/clinician/PatientInfoStep";
@@ -23,6 +24,7 @@ export default function NewClientPage() {
   const [restrictions, setRestrictions] = useState<DietaryRestriction[]>([]);
   const [conditionTags, setConditionTags] = useState<string[]>([]);
   const [targets, setTargets] = useState<NutritionalTarget[]>(() => getDefaultTargets([]));
+  const [autoPresets, setAutoPresets] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   function handleTemplateApply(templateRestrictions: DietaryRestriction[], templateTargets: NutritionalTarget[]) {
@@ -95,10 +97,20 @@ export default function NewClientPage() {
           <DietaryRestrictionsStep selected={restrictions} onChange={setRestrictions} onNext={handleRestrictionsNext} onBack={() => setStep(1)} />
         )}
         {step === 3 && (
-          <ConditionTagsStep selected={conditionTags} onChange={setConditionTags} onNext={() => setStep(4)} onBack={() => setStep(2)} />
+          <ConditionTagsStep
+            selected={conditionTags}
+            onChange={setConditionTags}
+            onNext={() => {
+              const presetIds = getPresetsForProfile(conditionTags, restrictions);
+              setAutoPresets(presetIds);
+              if (presetIds.length > 0) setTargets((prev) => applyPresetsToTargets(prev, presetIds));
+              setStep(4);
+            }}
+            onBack={() => setStep(2)}
+          />
         )}
         {step === 4 && (
-          <NutritionalGoalsStep targets={targets} onChange={setTargets} onNext={() => setStep(5)} onBack={() => setStep(3)} />
+          <NutritionalGoalsStep targets={targets} onChange={setTargets} onNext={() => setStep(5)} onBack={() => setStep(3)} initialActivePresets={autoPresets} />
         )}
         {step === 5 && (
           <SetupSummary
