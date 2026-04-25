@@ -28,7 +28,8 @@ export default function PatientLoginPage() {
     });
 
     if (!res.ok) {
-      setError("PIN not recognised. Check with your practitioner.");
+      const body = await res.json().catch(() => ({}));
+      setError(body.detail ? `Error: ${body.detail}` : "PIN not recognised. Check with your practitioner.");
       setLoading(false);
       return;
     }
