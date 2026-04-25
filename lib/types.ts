@@ -82,6 +82,7 @@ export interface PatientProfile {
   pin?: string;
   restrictions: DietaryRestriction[];
   targets: NutritionalTarget[];
+  conditionTags?: string[];
   setupComplete: boolean;
 }
 
@@ -134,3 +135,15 @@ export const MEAL_TYPE_LABELS: Record<MealType, string> = {
 };
 
 export const MEAL_TYPES: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
+
+export interface Recipe {
+  id: string;
+  name: string;
+  description: string;
+  mealTypes: MealType[];
+  tags: DietaryRestriction[];
+  ingredients: Array<{ foodId: string; portionGrams: number }>;
+  highlightedNutrients: NutrientKey[];
+  prepTime?: string;
+  note?: string;
+}

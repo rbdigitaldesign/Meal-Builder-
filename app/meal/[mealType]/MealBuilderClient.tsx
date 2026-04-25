@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useRef } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Food, MealItem, MealType } from "@/lib/types";
@@ -9,6 +9,8 @@ import { useProfileStore } from "@/store/profileStore";
 import { useMealStore } from "@/store/mealStore";
 import { MealScaffold } from "@/components/meal/MealScaffold";
 import { MealSummaryPanel } from "@/components/meal/MealSummaryPanel";
+import { DailyProgressStrip } from "@/components/meal/DailyProgressStrip";
+import { RecipePicker } from "@/components/meal/RecipePicker";
 import { Button } from "@/components/ui/Button";
 
 interface PageProps {
@@ -37,6 +39,8 @@ export default function MealBuilderClient({ params }: PageProps) {
   const { profile } = useProfileStore();
   const { dailyLog, addItemToMeal, removeItemFromMeal, updateItemPortion, clearMeal } = useMealStore();
 
+  const [activeMode, setActiveMode] = useState<"recipes" | "build">("recipes");
+
   if (!profile?.setupComplete) {
     router.replace("/clinician");
     return null;
@@ -63,12 +67,20 @@ export default function MealBuilderClient({ params }: PageProps) {
     removeItemFromMeal(mealType, foodId);
   }
 
+  function handleApplyRecipe(recipeItems: MealItem[]) {
+    clearMeal(mealType);
+    for (const item of recipeItems) {
+      addItemToMeal(mealType, item);
+    }
+    setActiveMode("build");
+  }
+
   const label = MEAL_TYPE_LABELS[mealType] ?? mealType;
 
   return (
     <div className="min-h-screen bg-brand-cream">
       {/* Header */}
-      <div className="bg-white border-b border-brand-warm px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
+      <div className="bg-white border-b border-brand-warm px-4 py-3 flex items-center gap-3 sticky top-0 z-20">
         <Link href="/dashboard" className="text-brand-olive text-sm font-medium hover:underline">
           ← Dashboard
         </Link>
@@ -83,17 +95,55 @@ export default function MealBuilderClient({ params }: PageProps) {
         )}
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        {/* Build Your Plate scaffold */}
-        <MealScaffold
-          restrictions={profile.restrictions}
-          currentItems={items}
-          onAdd={handleAdd}
-          onRemove={handleRemove}
-          onPortionChange={(foodId, grams) => updateItemPortion(mealType, foodId, grams)}
-        />
+      {/* Live daily progress — always visible */}
+      <div className="sticky top-[52px] z-10">
+        <DailyProgressStrip targets={profile.targets} dailyLog={dailyLog} />
+      </div>
 
-        {/* Collapsible nutritional summary */}
+      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        {/* Mode tabs */}
+        <div className="flex rounded-xl bg-stone-100 p-1 gap-1">
+          <button
+            onClick={() => setActiveMode("recipes")}
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+              activeMode === "recipes"
+                ? "bg-white text-brand-forest shadow-sm"
+                : "text-stone-500 hover:text-brand-forest"
+            }`}
+          >
+            Recipes
+          </button>
+          <button
+            onClick={() => setActiveMode("build")}
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+              activeMode === "build"
+                ? "bg-white text-brand-forest shadow-sm"
+                : "text-stone-500 hover:text-brand-forest"
+            }`}
+          >
+            Build Your Plate
+          </button>
+        </div>
+
+        {/* Mode content */}
+        {activeMode === "recipes" ? (
+          <RecipePicker
+            mealType={mealType}
+            restrictions={profile.restrictions}
+            currentItems={items}
+            onApply={handleApplyRecipe}
+          />
+        ) : (
+          <MealScaffold
+            restrictions={profile.restrictions}
+            currentItems={items}
+            onAdd={handleAdd}
+            onRemove={handleRemove}
+            onPortionChange={(foodId, grams) => updateItemPortion(mealType, foodId, grams)}
+          />
+        )}
+
+        {/* Detailed nutritional summary (absorption notes + full breakdown) */}
         <MealSummaryPanel items={items} targets={profile.targets} />
 
         <div className="pb-6">

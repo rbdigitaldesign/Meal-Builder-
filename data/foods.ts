@@ -21,6 +21,10 @@ export const FOODS_BY_CATEGORY: Record<MealCategory, Food[]> = {
   carbs:   CARB_FOODS,
 };
 
+export const FOODS_BY_ID: Record<string, Food> = Object.fromEntries(
+  FOODS.map((f) => [f.id, f])
+);
+
 export const DATA_SOURCES = [
   { label: "vital.ly", url: "https://www.vital.ly" },
   { label: "USDA FoodData Central", url: "https://fdc.nal.usda.gov" },
