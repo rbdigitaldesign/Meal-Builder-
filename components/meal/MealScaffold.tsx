@@ -44,16 +44,11 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
     );
   }
 
-  function getSelectedItem(cat: MealCategory): MealItem | undefined {
-    return currentItems.find((i) => i.food.mealCategory === cat);
-  }
-
   function handleToggle(food: Food) {
-    const existing = getSelectedItem(food.mealCategory);
-    if (existing?.food.id === food.id) {
+    const isSelected = currentItems.some((i) => i.food.id === food.id);
+    if (isSelected) {
       onRemove(food.id);
     } else {
-      if (existing) onRemove(existing.food.id);
       onAdd(food);
     }
   }
@@ -98,12 +93,12 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
     <div className="space-y-4">
       <div>
         <h2 className="font-semibold text-brand-forest">Build Your Plate</h2>
-        <p className="text-sm text-stone-500 mt-0.5">Choose one from each section to build a balanced meal.</p>
+        <p className="text-sm text-stone-500 mt-0.5">Add foods from each group — mix and match freely.</p>
       </div>
 
+      <div className="grid grid-cols-2 gap-3">
       {CATEGORY_ORDER.map((cat) => {
         const foods = getFiltered(cat);
-        const selectedItem = getSelectedItem(cat);
 
         return (
           <div key={cat} className={`rounded-2xl border overflow-hidden ${CATEGORY_COLORS[cat]}`}>
@@ -114,10 +109,11 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
             </div>
 
             {/* Food options */}
-            <div className="p-3 grid grid-cols-2 gap-2">
+            <div className="p-2 flex flex-col gap-1.5">
               {foods.map((food) => {
-                const isSelected = selectedItem?.food.id === food.id;
-                const portion = selectedItem?.portionGrams ?? (
+                const thisItem = currentItems.find((i) => i.food.id === food.id);
+                const isSelected = !!thisItem;
+                const portion = thisItem?.portionGrams ?? (
                   food.servingUnit
                     ? (food.servingUnit.minUnits ?? 1) * food.servingUnit.gramsPerUnit * 2
                     : 100
@@ -197,12 +193,13 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
 
             {foods.length === 0 && (
               <p className="px-4 pb-3 text-xs text-stone-400">
-                No options match the current dietary restrictions.
+                No options match your restrictions.
               </p>
             )}
           </div>
         );
       })}
+      </div>
 
       {/* Data attribution */}
       <p className="text-xs text-stone-400 text-center pt-1">
