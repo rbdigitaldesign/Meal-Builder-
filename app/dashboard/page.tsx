@@ -204,7 +204,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Recipe instructions — only on today, only when recipes are active */}
-        {isToday && <TodayRecipeCard activeRecipes={activeRecipes} />}
+        {isToday && <TodayRecipeCard activeRecipes={activeRecipes} dailyLog={dailyLog} />}
 
         {/* Reset day — only on today */}
         {isToday && (
