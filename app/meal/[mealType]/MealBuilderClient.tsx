@@ -100,7 +100,7 @@ export default function MealBuilderClient({ params }: PageProps) {
         <DailyProgressStrip targets={profile.targets} dailyLog={dailyLog} />
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         {/* Mode tabs */}
         <div className="flex rounded-xl bg-stone-100 p-1 gap-1">
           <button
