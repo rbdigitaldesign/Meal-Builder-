@@ -62,6 +62,12 @@ export default function EditClientPage({ params }: PageProps) {
     }).eq("id", id);
 
     if (error) {
+      if (error.code === "23505") {
+        alert(`PIN ${pin} is already assigned to another client. Please choose a different PIN.`);
+        setStep(0);
+        setSaving(false);
+        return;
+      }
       alert("Failed to save changes. Please try again.");
       setSaving(false);
     } else {

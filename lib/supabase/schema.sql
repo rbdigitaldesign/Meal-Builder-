@@ -8,7 +8,7 @@ create table public.clients (
   id uuid primary key default gen_random_uuid(),
   practitioner_id uuid not null references auth.users(id) on delete cascade,
   name text not null,
-  pin text,
+  pin text unique,
   restrictions text[] not null default '{}',
   targets jsonb not null default '[]',
   condition_tags text[] not null default '{}',

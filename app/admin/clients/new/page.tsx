@@ -45,7 +45,12 @@ export default function NewClientPage() {
     });
 
     if (error) {
-      alert("Failed to save client. Please try again.");
+      if (error.code === "23505") {
+        alert(`PIN ${pin} is already assigned to another client. Please choose a different PIN.`);
+        setStep(0);
+      } else {
+        alert("Failed to save client. Please try again.");
+      }
       setSaving(false);
     } else {
       router.push("/admin/dashboard");
