@@ -99,7 +99,7 @@ export default function DashboardPage() {
         {/* Meals */}
         <div>
           <h2 className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">Today&apos;s Meals</h2>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {MEAL_TYPES.map((mealType) => (
               <MealSummaryCard
                 key={mealType}
