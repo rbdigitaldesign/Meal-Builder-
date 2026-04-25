@@ -7,9 +7,10 @@ import { Card } from "@/components/ui/Card";
 interface Props {
   summaries: NutrientSummary[];
   targets: NutritionalTarget[];
+  className?: string;
 }
 
-export function DailyNutrientChart({ summaries, targets }: Props) {
+export function DailyNutrientChart({ summaries, targets, className }: Props) {
   const criticals = summaries.filter(
     (s) => targets.find((t) => t.nutrient === s.nutrient)?.priority === "critical"
   );
@@ -18,7 +19,7 @@ export function DailyNutrientChart({ summaries, targets }: Props) {
   );
 
   return (
-    <Card>
+    <Card className={className}>
       <h3 className="font-semibold text-brand-forest mb-4">Today&apos;s Progress</h3>
 
       {criticals.length > 0 && (

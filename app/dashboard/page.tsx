@@ -92,12 +92,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
+      <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
         {/* Daily progress + health plan side by side */}
         {isSupabasePatient ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
-            <DailyNutrientChart summaries={summaries} targets={profile.targets} />
-            <HealthPlanCard profile={profile} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+            <DailyNutrientChart summaries={summaries} targets={profile.targets} className="h-full" />
+            <HealthPlanCard profile={profile} className="h-full" />
           </div>
         ) : (
           <DailyNutrientChart summaries={summaries} targets={profile.targets} />
