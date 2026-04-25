@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/profileStore";
 import { useMealStore } from "@/store/mealStore";
@@ -15,10 +15,18 @@ export default function DashboardPage() {
   const router = useRouter();
   const { profile, resetProfile } = useProfileStore();
   const { dailyLog, resetDay, ensureTodayLog } = useMealStore();
+  const [isSupabasePatient, setIsSupabasePatient] = useState(false);
 
   useEffect(() => {
     ensureTodayLog();
+    setIsSupabasePatient(!!localStorage.getItem("meal-builder-client-id"));
   }, [ensureTodayLog]);
+
+  function handleSignOut() {
+    localStorage.removeItem("meal-builder-client-id");
+    resetProfile();
+    router.replace("/patient/login");
+  }
 
   if (!profile?.setupComplete) {
     router.replace("/clinician");
@@ -46,21 +54,30 @@ export default function DashboardPage() {
               <p className="font-semibold">{profile.name}</p>
             </div>
           </div>
-          <button
-            onClick={() => {
-              if (profile.pin) {
-                const entered = prompt("Enter clinician PIN:");
-                if (entered !== profile.pin) {
-                  alert("Incorrect PIN.");
-                  return;
+          {isSupabasePatient ? (
+            <button
+              onClick={handleSignOut}
+              className="text-xs opacity-60 hover:opacity-100 transition-opacity"
+            >
+              Sign out
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                if (profile.pin) {
+                  const entered = prompt("Enter clinician PIN:");
+                  if (entered !== profile.pin) {
+                    alert("Incorrect PIN.");
+                    return;
+                  }
                 }
-              }
-              router.push("/clinician");
-            }}
-            className="text-xs opacity-60 hover:opacity-100 transition-opacity"
-          >
-            Settings
-          </button>
+                router.push("/clinician");
+              }}
+              className="text-xs opacity-60 hover:opacity-100 transition-opacity"
+            >
+              Settings
+            </button>
+          )}
         </div>
       </div>
 
