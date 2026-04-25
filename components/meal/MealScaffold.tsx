@@ -96,7 +96,7 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
         <p className="text-sm text-stone-500 mt-0.5">Add foods from each group — mix and match freely.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="space-y-3">
       {CATEGORY_ORDER.map((cat) => {
         const foods = getFiltered(cat);
 
@@ -109,7 +109,7 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
             </div>
 
             {/* Food options */}
-            <div className="p-2 flex flex-col gap-1.5">
+            <div className="p-3 grid grid-cols-2 gap-2">
               {foods.map((food) => {
                 const thisItem = currentItems.find((i) => i.food.id === food.id);
                 const isSelected = !!thisItem;
