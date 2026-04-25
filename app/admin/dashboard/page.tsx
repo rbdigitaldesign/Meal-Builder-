@@ -157,7 +157,14 @@ export default function AdminDashboardPage() {
                 {/* Row 3: meta + action buttons */}
                 <div className="flex items-center justify-between gap-3 pt-2 border-t border-stone-100">
                   <div className="text-xs text-stone-400 space-y-0.5 min-w-0">
-                    <p>PIN: <span className="font-mono font-semibold text-stone-600">{client.pin ?? "—"}</span></p>
+                    <p className="flex items-center gap-1.5">
+                      <span>PIN:</span>
+                      {client.pin
+                        ? <span className="font-mono tracking-widest text-stone-400 select-none">••••</span>
+                        : <span className="text-stone-300 italic">not set</span>
+                      }
+                      <span className="text-stone-300">· View to reveal</span>
+                    </p>
                     {client.last_active
                       ? <p>Active: {new Date(client.last_active).toLocaleDateString("en-AU")}</p>
                       : <p>Added: {new Date(client.created_at).toLocaleDateString("en-AU")}</p>
