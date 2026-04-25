@@ -44,6 +44,9 @@ export default function ReportPage({ params }: PageProps) {
       ]);
       setClient(clientData);
       setLogs(logsData ?? []);
+      if (clientData) {
+        document.title = `${clientData.name} - Nutrition Report`;
+      }
       setLoading(false);
     }
     load();
