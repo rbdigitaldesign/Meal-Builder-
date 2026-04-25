@@ -8,10 +8,11 @@ import { useProfileStore } from "@/store/profileStore";
 import { getDefaultTargets } from "@/data/defaultTargets";
 import { PatientInfoStep } from "@/components/clinician/PatientInfoStep";
 import { DietaryRestrictionsStep } from "@/components/clinician/DietaryRestrictionsStep";
+import { ConditionsStep } from "@/components/clinician/ConditionsStep";
 import { NutritionalGoalsStep } from "@/components/clinician/NutritionalGoalsStep";
 import { SetupSummary } from "@/components/clinician/SetupSummary";
 
-const STEPS = ["Patient Info", "Restrictions", "Targets", "Review"];
+const STEPS = ["Patient Info", "Restrictions", "Conditions", "Targets", "Review"];
 
 export default function ClinicianPage() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function ClinicianPage() {
   const [name, setName] = useState("");
   const [pin, setPin] = useState("");
   const [restrictions, setRestrictions] = useState<DietaryRestriction[]>([]);
+  const [conditionTags, setConditionTags] = useState<string[]>([]);
   const [targets, setTargets] = useState<NutritionalTarget[]>(() => getDefaultTargets([]));
 
   function handleRestrictionsNext() {
@@ -28,11 +30,16 @@ export default function ClinicianPage() {
     setStep(2);
   }
 
+  function handleConditionsNext() {
+    setStep(3);
+  }
+
   function handleConfirm() {
     const profile: PatientProfile = {
       name: name.trim(),
       pin: pin || undefined,
       restrictions,
+      conditionTags,
       targets,
       setupComplete: true,
     };
@@ -40,7 +47,7 @@ export default function ClinicianPage() {
     router.push("/dashboard");
   }
 
-  const profileDraft = { name, pin, restrictions, targets };
+  const profileDraft = { name, pin, restrictions, conditionTags, targets };
 
   return (
     <div className="min-h-screen bg-brand-cream">
@@ -98,18 +105,26 @@ export default function ClinicianPage() {
           />
         )}
         {step === 2 && (
-          <NutritionalGoalsStep
-            targets={targets}
-            onChange={setTargets}
-            onNext={() => setStep(3)}
+          <ConditionsStep
+            selected={conditionTags}
+            onChange={setConditionTags}
+            onNext={handleConditionsNext}
             onBack={() => setStep(1)}
           />
         )}
         {step === 3 && (
+          <NutritionalGoalsStep
+            targets={targets}
+            onChange={setTargets}
+            onNext={() => setStep(4)}
+            onBack={() => setStep(2)}
+          />
+        )}
+        {step === 4 && (
           <SetupSummary
             profile={profileDraft}
             onConfirm={handleConfirm}
-            onBack={() => setStep(2)}
+            onBack={() => setStep(3)}
           />
         )}
       </div>

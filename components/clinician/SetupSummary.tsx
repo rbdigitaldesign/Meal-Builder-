@@ -28,6 +28,19 @@ export function SetupSummary({ profile, onConfirm, onBack }: Props) {
         {profile.pin && <p className="text-xs text-stone-500 mt-0.5">PIN protected</p>}
       </Card>
 
+      {(profile.conditionTags ?? []).length > 0 && (
+        <Card>
+          <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">Conditions & Focus Areas</p>
+          <div className="flex flex-wrap gap-2">
+            {(profile.conditionTags ?? []).map((tag) => (
+              <span key={tag} className="bg-amber-50 text-amber-800 border border-amber-200 text-sm px-3 py-1 rounded-full">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {profile.restrictions.length > 0 && (
         <Card>
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">Dietary Restrictions</p>
