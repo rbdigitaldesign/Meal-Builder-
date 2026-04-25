@@ -25,6 +25,13 @@ const FOCUS_PRESETS: { id: string; label: string; adjustments: PresetAdjustment[
     ],
   },
   {
+    id: "b12-deficiency",
+    label: "B12 Deficiency",
+    adjustments: [
+      { nutrient: "vitaminB12", dailyTarget: 2.4, priority: "critical" },
+    ],
+  },
+  {
     id: "zinc-deficiency",
     label: "Zinc Deficiency",
     adjustments: [
@@ -39,22 +46,22 @@ const FOCUS_PRESETS: { id: string; label: string; adjustments: PresetAdjustment[
     ],
   },
   {
-    id: "mental-health",
-    label: "Mental Health",
+    id: "vegetarian",
+    label: "Vegetarian",
     adjustments: [
-      { nutrient: "zinc",       dailyTarget: 11,  priority: "critical" },
-      { nutrient: "vitaminB12", dailyTarget: 2.4, priority: "critical" },
-      { nutrient: "protein",    dailyTarget: 60,  priority: "critical" },
       { nutrient: "iron",       dailyTarget: 18,  priority: "critical" },
+      { nutrient: "vitaminB12", dailyTarget: 2.4, priority: "critical" },
+      { nutrient: "zinc",       dailyTarget: 11,  priority: "recommended" },
     ],
   },
   {
-    id: "immune-support",
-    label: "Immune Support",
+    id: "vegan",
+    label: "Vegan",
     adjustments: [
-      { nutrient: "vitaminC", dailyTarget: 200, priority: "critical" },
-      { nutrient: "zinc",     dailyTarget: 11,  priority: "critical" },
-      { nutrient: "iron",     dailyTarget: 18,  priority: "critical" },
+      { nutrient: "iron",       dailyTarget: 32,   priority: "critical" },
+      { nutrient: "vitaminB12", dailyTarget: 2.4,  priority: "critical" },
+      { nutrient: "calcium",    dailyTarget: 1200, priority: "critical" },
+      { nutrient: "zinc",       dailyTarget: 11,   priority: "recommended" },
     ],
   },
 ];
@@ -152,7 +159,7 @@ export function NutritionalGoalsStep({ targets, onChange, onNext, onBack, submit
             );
           })}
         </div>
-        <p className="text-xs text-stone-400 mt-1.5">Tap to apply — sets recommended targets and marks key nutrients as critical. Tap again to remove.</p>
+        <p className="text-xs text-stone-400 mt-1.5">Apply one or more — each sets evidence-based targets for that specific deficiency. Tap again to remove.</p>
       </div>
 
       <div className="space-y-3">
