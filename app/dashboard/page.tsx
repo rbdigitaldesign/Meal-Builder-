@@ -62,7 +62,7 @@ export default function DashboardPage() {
             <Image src="/logo.png" alt="Alchemy Natural Health" width={100} height={34} className="object-contain" />
             <div className="border-l border-white/20 pl-4">
               <p className="text-xs opacity-70">{today}</p>
-              <p className="font-semibold">{profile.name}</p>
+              <p className="font-semibold">Welcome back, {profile.name}!</p>
             </div>
           </div>
           {isSupabasePatient ? (

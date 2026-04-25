@@ -58,9 +58,40 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
     }
   }
 
-  function changePortion(foodId: string, current: number, delta: number) {
-    const next = Math.min(PORTION_MAX, Math.max(PORTION_MIN, current + delta));
-    onPortionChange(foodId, next);
+  function changePortion(food: Food, current: number, delta: number) {
+    if (food.servingUnit) {
+      const { gramsPerUnit, minUnits = 1, maxUnits = 10 } = food.servingUnit;
+      const currentCount = Math.round(current / gramsPerUnit);
+      const nextCount = Math.min(maxUnits, Math.max(minUnits, currentCount + delta));
+      onPortionChange(food.id, nextCount * gramsPerUnit);
+    } else {
+      const next = Math.min(PORTION_MAX, Math.max(PORTION_MIN, current + delta));
+      onPortionChange(food.id, next);
+    }
+  }
+
+  function getPortionDisplay(food: Food, portionGrams: number): string {
+    if (food.servingUnit) {
+      const count = Math.round(portionGrams / food.servingUnit.gramsPerUnit);
+      return `${count} ${count === 1 ? food.servingUnit.singular : food.servingUnit.plural}`;
+    }
+    return `${portionGrams}g`;
+  }
+
+  function isAtMin(food: Food, portionGrams: number): boolean {
+    if (food.servingUnit) {
+      const count = Math.round(portionGrams / food.servingUnit.gramsPerUnit);
+      return count <= (food.servingUnit.minUnits ?? 1);
+    }
+    return portionGrams <= PORTION_MIN;
+  }
+
+  function isAtMax(food: Food, portionGrams: number): boolean {
+    if (food.servingUnit) {
+      const count = Math.round(portionGrams / food.servingUnit.gramsPerUnit);
+      return count >= (food.servingUnit.maxUnits ?? 10);
+    }
+    return portionGrams >= PORTION_MAX;
   }
 
   return (
@@ -83,10 +114,14 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
             </div>
 
             {/* Food options */}
-            <div className="p-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="p-3 grid grid-cols-2 gap-2">
               {foods.map((food) => {
                 const isSelected = selectedItem?.food.id === food.id;
-                const portion = selectedItem?.portionGrams ?? 100;
+                const portion = selectedItem?.portionGrams ?? (
+                  food.servingUnit
+                    ? (food.servingUnit.minUnits ?? 1) * food.servingUnit.gramsPerUnit * 2
+                    : 100
+                );
                 const scaled = isSelected ? scaleNutrients(food, portion) : null;
 
                 return (
@@ -108,7 +143,7 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
 
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-brand-black leading-snug">{food.name}</p>
-                        {food.servingSuggestion && (
+                        {food.servingSuggestion && !food.servingUnit && (
                           <p className="text-xs text-stone-400 mt-0.5">{food.servingSuggestion}</p>
                         )}
                         <div className="flex flex-wrap gap-1 mt-1">
@@ -119,25 +154,25 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
                       </div>
                     </button>
 
-                    {/* Inline portion control — shown only when selected */}
+                    {/* Portion control — shown only when selected */}
                     {isSelected && scaled && (
                       <div className="px-3 pb-3 pt-0 border-t border-brand-warm/50 mt-1">
                         <div className="flex items-center justify-between gap-2 mt-2">
                           <div className="flex items-center gap-2">
                             <button
-                              onClick={() => changePortion(food.id, portion, -PORTION_STEP)}
-                              disabled={portion <= PORTION_MIN}
+                              onClick={() => changePortion(food, portion, -1)}
+                              disabled={isAtMin(food, portion)}
                               aria-label="Decrease portion"
                               className="w-7 h-7 flex items-center justify-center rounded-full border border-brand-warm bg-white text-brand-forest font-bold hover:border-brand-olive disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-base leading-none"
                             >
                               −
                             </button>
-                            <span className="text-sm font-semibold text-brand-forest tabular-nums w-12 text-center">
-                              {portion}g
+                            <span className="text-sm font-semibold text-brand-forest tabular-nums min-w-[4rem] text-center">
+                              {getPortionDisplay(food, portion)}
                             </span>
                             <button
-                              onClick={() => changePortion(food.id, portion, +PORTION_STEP)}
-                              disabled={portion >= PORTION_MAX}
+                              onClick={() => changePortion(food, portion, +1)}
+                              disabled={isAtMax(food, portion)}
                               aria-label="Increase portion"
                               className="w-7 h-7 flex items-center justify-center rounded-full border border-brand-warm bg-white text-brand-forest font-bold hover:border-brand-olive disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-base leading-none"
                             >

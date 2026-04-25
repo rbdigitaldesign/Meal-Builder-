@@ -1,19 +1,64 @@
 "use client";
 
-import type { MealType, DietaryRestriction, MealItem } from "@/lib/types";
+import type { MealType, DietaryRestriction, MealItem, NutritionalTarget, DailyLog, Recipe } from "@/lib/types";
+import { NUTRIENT_LABELS } from "@/lib/types";
 import { RECIPES, resolveRecipeItems } from "@/data/recipes";
-import { calculateMealTotals } from "@/lib/nutrition";
+import { calculateMealTotals, calculateDailyTotals } from "@/lib/nutrition";
 import { NutrientBadge } from "@/components/ui/Badge";
 import { useEnergyUnit } from "@/lib/useEnergyUnit";
+
+const OVERAGE_THRESHOLD = 150;
+
+interface OverageItem {
+  label: string;
+  unit: string;
+  projected: number;
+  percentage: number;
+  target: number;
+}
+
+function getRecipeOverages(
+  recipe: Recipe,
+  mealType: MealType,
+  dailyLog: DailyLog,
+  targets: NutritionalTarget[]
+): OverageItem[] {
+  if (targets.length === 0) return [];
+
+  const otherLog: DailyLog = {
+    ...dailyLog,
+    meals: { ...dailyLog.meals, [mealType]: null },
+  };
+  const otherTotals = calculateDailyTotals(otherLog);
+  const recipeTotals = calculateMealTotals(resolveRecipeItems(recipe));
+
+  return targets.flatMap((t) => {
+    const key = t.nutrient as keyof typeof otherTotals;
+    const projected = (otherTotals[key] ?? 0) + (recipeTotals[key] ?? 0);
+    const pct = t.dailyTarget > 0 ? Math.round((projected / t.dailyTarget) * 100) : 0;
+    if (pct > OVERAGE_THRESHOLD) {
+      return [{
+        label: NUTRIENT_LABELS[t.nutrient],
+        unit: t.unit,
+        projected: Math.round(projected * 10) / 10,
+        percentage: pct,
+        target: t.dailyTarget,
+      }];
+    }
+    return [];
+  });
+}
 
 interface Props {
   mealType: MealType;
   restrictions: DietaryRestriction[];
   currentItems: MealItem[];
+  dailyLog: DailyLog;
+  targets: NutritionalTarget[];
   onApply: (items: MealItem[]) => void;
 }
 
-export function RecipePicker({ mealType, restrictions, currentItems, onApply }: Props) {
+export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, targets, onApply }: Props) {
   const { display: displayEnergy } = useEnergyUnit();
 
   const filtered = RECIPES.filter(
@@ -26,11 +71,20 @@ export function RecipePicker({ mealType, restrictions, currentItems, onApply }: 
     const recipe = RECIPES.find((r) => r.id === recipeId);
     if (!recipe) return;
 
+    const overages = getRecipeOverages(recipe, mealType, dailyLog, targets);
+
     if (
       currentItems.length > 0 &&
       !confirm(`Replace current meal with "${recipe.name}"?`)
-    ) {
-      return;
+    ) return;
+
+    if (overages.length > 0) {
+      const lines = overages
+        .map((o) => `• ${o.label}: ${o.projected}${o.unit} (${o.percentage}% of your ${o.target}${o.unit} daily goal)`)
+        .join("\n");
+      if (!confirm(
+        `⚠️ Heads up — this recipe would take some nutrients over 150% of your daily targets:\n\n${lines}\n\nYou can reduce portion sizes in Build mode after applying.\n\nProceed anyway?`
+      )) return;
     }
 
     onApply(resolveRecipeItems(recipe));
@@ -58,6 +112,7 @@ export function RecipePicker({ mealType, restrictions, currentItems, onApply }: 
         {filtered.map((recipe) => {
           const items = resolveRecipeItems(recipe);
           const totals = calculateMealTotals(items);
+          const overages = getRecipeOverages(recipe, mealType, dailyLog, targets);
 
           return (
             <div
@@ -73,6 +128,11 @@ export function RecipePicker({ mealType, restrictions, currentItems, onApply }: 
                       {recipe.prepTime && (
                         <span className="text-xs bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full">
                           {recipe.prepTime}
+                        </span>
+                      )}
+                      {overages.length > 0 && (
+                        <span className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
+                          ⚠ High {overages.map((o) => o.label).join(", ")}
                         </span>
                       )}
                     </div>
@@ -95,7 +155,17 @@ export function RecipePicker({ mealType, restrictions, currentItems, onApply }: 
                   <span>{totals.fat}g fat</span>
                 </div>
 
-                {recipe.note && (
+                {overages.length > 0 && (
+                  <div className="flex items-start gap-1.5 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5 mt-2">
+                    <span className="flex-shrink-0 font-bold">⚠</span>
+                    <span>
+                      Would put your daily {overages.map((o) => `${o.label} at ${o.percentage}%`).join(" and ")} of target.
+                      Consider adjusting portions after applying.
+                    </span>
+                  </div>
+                )}
+
+                {recipe.note && !overages.length && (
                   <p className="text-xs text-brand-forest mt-2 bg-brand-sage/20 rounded-lg px-2 py-1.5">
                     {recipe.note}
                   </p>
@@ -120,9 +190,13 @@ export function RecipePicker({ mealType, restrictions, currentItems, onApply }: 
               <div className="px-4 pb-4">
                 <button
                   onClick={() => handleApply(recipe.id)}
-                  className="w-full bg-brand-olive hover:bg-brand-forest text-white text-sm font-medium py-2 rounded-xl transition-colors"
+                  className={`w-full text-white text-sm font-medium py-2 rounded-xl transition-colors ${
+                    overages.length > 0
+                      ? "bg-amber-500 hover:bg-amber-600"
+                      : "bg-brand-olive hover:bg-brand-forest"
+                  }`}
                 >
-                  Use This Recipe →
+                  {overages.length > 0 ? "Use This Recipe (review portions) →" : "Use This Recipe →"}
                 </button>
               </div>
             </div>
