@@ -22,10 +22,10 @@ export const MEAL_CATEGORY_LABELS: Record<MealCategory, string> = {
 };
 
 export const MEAL_CATEGORY_HINTS: Record<MealCategory, string> = {
-  protein: "Choose 1",
-  fat: "Choose 1",
-  fibre: "Choose 1",
-  carbs: "Choose 1 — optional",
+  protein: "Add any",
+  fat: "Add any",
+  fibre: "Add any",
+  carbs: "Add any — optional",
 };
 
 export type DietaryRestriction =
