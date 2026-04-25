@@ -9,6 +9,7 @@ import { calculateDailyTotals, buildNutrientSummaries } from "@/lib/nutrition";
 import { MEAL_TYPES } from "@/lib/types";
 import { MealSummaryCard } from "@/components/dashboard/MealSummaryCard";
 import { DailyNutrientChart } from "@/components/dashboard/DailyNutrientChart";
+import { HealthPlanCard } from "@/components/dashboard/HealthPlanCard";
 import { Button } from "@/components/ui/Button";
 
 export default function DashboardPage() {
@@ -91,6 +92,9 @@ export default function DashboardPage() {
       <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
         {/* Daily progress */}
         <DailyNutrientChart summaries={summaries} targets={profile.targets} />
+
+        {/* Patient's health plan — read-only view of practitioner-set goals */}
+        {isSupabasePatient && <HealthPlanCard profile={profile} />}
 
         {/* Meals */}
         <div>
