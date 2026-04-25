@@ -20,7 +20,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        sans:  ["baltica", "'Helvetica Neue'", "system-ui", "sans-serif"],
+        serif: ["adobe-garamond-pro", "Georgia", "serif"],
+        body:  ["baltica", "'Helvetica Neue'", "system-ui", "sans-serif"],
       },
     },
   },

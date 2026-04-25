@@ -43,3 +43,14 @@ input[type="range"]::-moz-range-thumb {
   border: 2px solid #fcffed;
   box-shadow: 0 0 0 1px #7c966c;
 }
+
+/* Fonts are loaded via Adobe Fonts — see layout.tsx head comment.
+   These declarations ensure the right font-family names are used
+   and fall back gracefully until the kit is loaded. */
+body {
+  font-family: baltica, 'Helvetica Neue', system-ui, sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: adobe-garamond-pro, Georgia, serif;
+}

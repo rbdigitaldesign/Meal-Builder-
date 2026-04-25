@@ -8,16 +8,16 @@ interface Props {
 }
 
 const STATUS_COLORS: Record<NutrientSummary["status"], string> = {
-  deficient:  "bg-red-500",
+  deficient:  "bg-stone-300",
   approaching: "bg-amber-400",
   met:        "bg-brand-olive",
-  exceeded:   "bg-brand-warm",
+  exceeded:   "bg-brand-sage",
 };
 
 export function ProgressBar({ percentage, status, showLabel = false, height = "md" }: Props) {
   const clamped = Math.min(percentage, 100);
   const barColor = STATUS_COLORS[status];
-  const h = height === "sm" ? "h-1.5" : "h-2.5";
+  const h = height === "sm" ? "h-2" : "h-3";
 
   return (
     <div className="w-full">
