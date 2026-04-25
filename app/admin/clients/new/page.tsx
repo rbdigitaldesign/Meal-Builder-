@@ -11,8 +11,9 @@ import { DietaryRestrictionsStep } from "@/components/clinician/DietaryRestricti
 import { NutritionalGoalsStep } from "@/components/clinician/NutritionalGoalsStep";
 import { SetupSummary } from "@/components/clinician/SetupSummary";
 import { ConditionTagsStep } from "@/components/admin/ConditionTagsStep";
+import { TemplatePickerStep } from "@/components/admin/TemplatePickerStep";
 
-const STEPS = ["Details", "Restrictions", "Conditions", "Targets", "Review"];
+const STEPS = ["Details", "Template", "Restrictions", "Conditions", "Targets", "Review"];
 
 export default function NewClientPage() {
   const router = useRouter();
@@ -24,9 +25,15 @@ export default function NewClientPage() {
   const [targets, setTargets] = useState<NutritionalTarget[]>(() => getDefaultTargets([]));
   const [saving, setSaving] = useState(false);
 
+  function handleTemplateApply(templateRestrictions: DietaryRestriction[], templateTargets: NutritionalTarget[]) {
+    setRestrictions(templateRestrictions);
+    setTargets(templateTargets);
+    setStep(3); // skip straight to conditions after applying template
+  }
+
   function handleRestrictionsNext() {
     setTargets(getDefaultTargets(restrictions));
-    setStep(2);
+    setStep(3);
   }
 
   async function handleConfirm() {
@@ -74,15 +81,30 @@ export default function NewClientPage() {
           ))}
         </div>
 
-        {step === 0 && <PatientInfoStep name={name} pin={pin} onChangeName={setName} onChangePin={setPin} onNext={() => setStep(1)} />}
-        {step === 1 && <DietaryRestrictionsStep selected={restrictions} onChange={setRestrictions} onNext={handleRestrictionsNext} onBack={() => setStep(0)} />}
-        {step === 2 && <ConditionTagsStep selected={conditionTags} onChange={setConditionTags} onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <NutritionalGoalsStep targets={targets} onChange={setTargets} onNext={() => setStep(4)} onBack={() => setStep(2)} />}
+        {step === 0 && (
+          <PatientInfoStep name={name} pin={pin} onChangeName={setName} onChangePin={setPin} onNext={() => setStep(1)} />
+        )}
+        {step === 1 && (
+          <TemplatePickerStep
+            onApply={handleTemplateApply}
+            onSkip={() => setStep(2)}
+            onBack={() => setStep(0)}
+          />
+        )}
+        {step === 2 && (
+          <DietaryRestrictionsStep selected={restrictions} onChange={setRestrictions} onNext={handleRestrictionsNext} onBack={() => setStep(1)} />
+        )}
+        {step === 3 && (
+          <ConditionTagsStep selected={conditionTags} onChange={setConditionTags} onNext={() => setStep(4)} onBack={() => setStep(2)} />
+        )}
         {step === 4 && (
+          <NutritionalGoalsStep targets={targets} onChange={setTargets} onNext={() => setStep(5)} onBack={() => setStep(3)} />
+        )}
+        {step === 5 && (
           <SetupSummary
             profile={{ name, pin, restrictions, targets }}
             onConfirm={handleConfirm}
-            onBack={() => setStep(3)}
+            onBack={() => setStep(4)}
           />
         )}
         {saving && <p className="text-center text-sm text-stone-400 mt-4">Saving client…</p>}

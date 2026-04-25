@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/profileStore";
 import { useMealStore } from "@/store/mealStore";
@@ -9,6 +9,7 @@ import { calculateDailyTotals, buildNutrientSummaries } from "@/lib/nutrition";
 import { MEAL_TYPES } from "@/lib/types";
 import { MealSummaryCard } from "@/components/dashboard/MealSummaryCard";
 import { DailyNutrientChart } from "@/components/dashboard/DailyNutrientChart";
+import { HealthPlanCard } from "@/components/dashboard/HealthPlanCard";
 import { Button } from "@/components/ui/Button";
 
 export default function DashboardPage() {
@@ -16,20 +17,27 @@ export default function DashboardPage() {
   const { profile, resetProfile } = useProfileStore();
   const { dailyLog, resetDay, ensureTodayLog } = useMealStore();
   const [isSupabasePatient, setIsSupabasePatient] = useState(false);
+  const isSigningOutRef = useRef(false);
 
   useEffect(() => {
     ensureTodayLog();
     setIsSupabasePatient(!!localStorage.getItem("meal-builder-client-id"));
   }, [ensureTodayLog]);
 
+  useEffect(() => {
+    if (!profile?.setupComplete && !isSigningOutRef.current) {
+      router.replace("/clinician");
+    }
+  }, [profile?.setupComplete, router]);
+
   function handleSignOut() {
+    isSigningOutRef.current = true;
     localStorage.removeItem("meal-builder-client-id");
     resetProfile();
     router.replace("/patient/login");
   }
 
   if (!profile?.setupComplete) {
-    router.replace("/clinician");
     return null;
   }
 
@@ -81,9 +89,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
         {/* Daily progress */}
         <DailyNutrientChart summaries={summaries} targets={profile.targets} />
+
+        {/* Patient's health plan — read-only view of practitioner-set goals */}
+        {isSupabasePatient && <HealthPlanCard profile={profile} />}
 
         {/* Meals */}
         <div>

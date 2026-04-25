@@ -22,7 +22,7 @@ export function DailyNutrientChart({ summaries, targets }: Props) {
       <h3 className="font-semibold text-brand-forest mb-4">Today&apos;s Progress</h3>
 
       {criticals.length > 0 && (
-        <div className="space-y-3 mb-4">
+        <div className="space-y-4 mb-6">
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Priority targets</p>
           {criticals.map((s) => (
             <div key={s.nutrient}>
@@ -35,7 +35,7 @@ export function DailyNutrientChart({ summaries, targets }: Props) {
                       ? "text-brand-olive"
                       : s.status === "approaching"
                       ? "text-amber-500"
-                      : "text-red-500"
+                      : "text-stone-400"
                   }`}>
                     {s.percentage}%
                   </span>
@@ -48,7 +48,7 @@ export function DailyNutrientChart({ summaries, targets }: Props) {
       )}
 
       {recommended.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Other targets</p>
           {recommended.map((s) => (
             <div key={s.nutrient}>

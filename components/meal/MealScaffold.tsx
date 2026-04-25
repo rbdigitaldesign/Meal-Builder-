@@ -146,10 +146,10 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
                           </div>
                           <button
                             onClick={toggleUnit}
-                            className="text-xs text-stone-400 tabular-nums hover:text-brand-olive transition-colors"
+                            className="text-xs text-stone-500 tabular-nums underline decoration-dotted underline-offset-2 hover:text-brand-olive transition-colors cursor-pointer"
                             title={`Tap to switch to ${unit === "kcal" ? "kJ" : "kcal"}`}
                           >
-                            {displayEnergy(scaled.calories)} · {scaled.protein}g protein
+                            {displayEnergy(scaled.calories)} ⇄ · {scaled.protein}g protein
                             {scaled.iron > 0 ? ` · ${scaled.iron}mg iron` : ""}
                           </button>
                         </div>
