@@ -35,7 +35,7 @@ export default function MealBuilderClient({ params }: PageProps) {
   const mealType = mealTypeRaw as MealType;
   const router = useRouter();
 
-  const { profile } = useProfileStore();
+  const { profile, _hasHydrated } = useProfileStore();
   const { dailyLog, addItemToMeal, removeItemFromMeal, updateItemPortion, clearMeal } = useMealStore();
 
   const [activeMode, setActiveMode] = useState<"recipes" | "build">("recipes");
@@ -52,6 +52,9 @@ export default function MealBuilderClient({ params }: PageProps) {
       if (syncTimer.current) clearTimeout(syncTimer.current);
     };
   }, [items, mealType]);
+
+  // Wait for store to rehydrate from localStorage before deciding to redirect
+  if (!_hasHydrated) return null;
 
   if (!profile?.setupComplete) {
     router.replace("/clinician");
