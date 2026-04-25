@@ -46,7 +46,7 @@ export function MealSummaryCard({ meal, mealType, targets }: Props) {
               <p className="font-semibold text-brand-black">{MEAL_TYPE_LABELS[mealType]}</p>
               <p className="text-xs text-stone-400 mt-0.5">
                 {items.length === 0
-                  ? "No foods added yet"
+                  ? <span className="text-brand-olive/70">Tap to add foods →</span>
                   : <>
                       {items.length} food{items.length !== 1 ? "s" : ""} ·{" "}
                       <button

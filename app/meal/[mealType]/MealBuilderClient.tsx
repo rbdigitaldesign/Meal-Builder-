@@ -16,19 +16,6 @@ interface PageProps {
   params: Promise<{ mealType: string }>;
 }
 
-function syncMeal(mealType: string, items: MealItem[]) {
-  const clientId = typeof window !== "undefined"
-    ? localStorage.getItem("meal-builder-client-id")
-    : null;
-  if (!clientId) return;
-
-  const date = new Date().toISOString().slice(0, 10);
-  fetch("/api/meal-logs", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ clientId, date, mealType, items }),
-  }).catch(() => {});
-}
 
 export default function MealBuilderClient({ params }: PageProps) {
   const { mealType: mealTypeRaw } = use(params);
@@ -39,19 +26,37 @@ export default function MealBuilderClient({ params }: PageProps) {
   const { dailyLog, addItemToMeal, removeItemFromMeal, updateItemPortion, clearMeal } = useMealStore();
 
   const [activeMode, setActiveMode] = useState<"recipes" | "build">("recipes");
+  const [syncStatus, setSyncStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   const meal = dailyLog.meals[mealType];
   const items = meal?.items ?? [];
 
   // Debounced sync to Supabase via API route
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSupabasePatient = typeof window !== "undefined" && !!localStorage.getItem("meal-builder-client-id");
   useEffect(() => {
+    if (!isSupabasePatient) return;
     if (syncTimer.current) clearTimeout(syncTimer.current);
-    syncTimer.current = setTimeout(() => syncMeal(mealType, items), 1500);
+    setSyncStatus("saving");
+    syncTimer.current = setTimeout(async () => {
+      const clientId = localStorage.getItem("meal-builder-client-id");
+      if (!clientId) return;
+      const date = new Date().toISOString().slice(0, 10);
+      try {
+        const res = await fetch("/api/meal-logs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clientId, date, mealType, items }),
+        });
+        setSyncStatus(res.ok ? "saved" : "error");
+      } catch {
+        setSyncStatus("error");
+      }
+    }, 1500);
     return () => {
       if (syncTimer.current) clearTimeout(syncTimer.current);
     };
-  }, [items, mealType]);
+  }, [items, mealType, isSupabasePatient]);
 
   // Wait for store to rehydrate from localStorage before deciding to redirect
   if (!_hasHydrated) return null;
@@ -87,14 +92,25 @@ export default function MealBuilderClient({ params }: PageProps) {
           ← Dashboard
         </Link>
         <h1 className="flex-1 text-center font-semibold text-brand-forest">{label}</h1>
-        {items.length > 0 && (
-          <button
-            onClick={() => clearMeal(mealType)}
-            className="text-xs text-stone-400 hover:text-red-500 transition-colors"
-          >
-            Clear
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {isSupabasePatient && syncStatus !== "idle" && (
+            <span className={`text-xs transition-opacity ${
+              syncStatus === "saving" ? "text-stone-400" :
+              syncStatus === "saved"  ? "text-brand-olive" :
+              "text-red-400"
+            }`}>
+              {syncStatus === "saving" ? "Saving…" : syncStatus === "saved" ? "Saved ✓" : "Save failed"}
+            </span>
+          )}
+          {items.length > 0 && (
+            <button
+              onClick={() => clearMeal(mealType)}
+              className="text-xs text-stone-400 hover:text-red-500 transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Live daily progress — always visible */}

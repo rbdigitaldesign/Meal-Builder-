@@ -11,6 +11,7 @@ import { MealSummaryCard } from "@/components/dashboard/MealSummaryCard";
 import { DailyNutrientChart } from "@/components/dashboard/DailyNutrientChart";
 import { HealthPlanCard } from "@/components/dashboard/HealthPlanCard";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -18,6 +19,9 @@ export default function DashboardPage() {
   const _hasHydrated = useProfileStore((s) => s._hasHydrated);
   const { dailyLog, resetDay, ensureTodayLog } = useMealStore();
   const [isSupabasePatient, setIsSupabasePatient] = useState(false);
+  const [pinModalOpen, setPinModalOpen] = useState(false);
+  const [pinEntry, setPinEntry] = useState("");
+  const [pinError, setPinError] = useState(false);
   const isSigningOutRef = useRef(false);
 
   useEffect(() => {
@@ -76,13 +80,12 @@ export default function DashboardPage() {
             <button
               onClick={() => {
                 if (profile.pin) {
-                  const entered = prompt("Enter clinician PIN:");
-                  if (entered !== profile.pin) {
-                    alert("Incorrect PIN.");
-                    return;
-                  }
+                  setPinEntry("");
+                  setPinError(false);
+                  setPinModalOpen(true);
+                } else {
+                  router.push("/clinician");
                 }
-                router.push("/clinician");
               }}
               className="text-xs opacity-60 hover:opacity-100 transition-opacity"
             >
@@ -134,6 +137,46 @@ export default function DashboardPage() {
           </Button>
         </div>
       </div>
+
+      {/* PIN modal for Settings access */}
+      {pinModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xs space-y-4">
+            <h2 className="font-semibold text-brand-forest text-lg">Enter PIN</h2>
+            <p className="text-sm text-stone-500">Enter the clinician PIN to access settings.</p>
+            <Input
+              label="PIN"
+              type="password"
+              inputMode="numeric"
+              maxLength={4}
+              value={pinEntry}
+              onChange={(e) => { setPinEntry(e.target.value.replace(/\D/g, "")); setPinError(false); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && pinEntry.length === 4) {
+                  if (pinEntry === profile.pin) { setPinModalOpen(false); router.push("/clinician"); }
+                  else { setPinError(true); setPinEntry(""); }
+                }
+                if (e.key === "Escape") setPinModalOpen(false);
+              }}
+              autoFocus
+            />
+            {pinError && <p className="text-xs text-red-500">Incorrect PIN. Try again.</p>}
+            <div className="flex gap-3">
+              <Button variant="secondary" className="flex-1" onClick={() => setPinModalOpen(false)}>Cancel</Button>
+              <Button
+                className="flex-1"
+                disabled={pinEntry.length !== 4}
+                onClick={() => {
+                  if (pinEntry === profile.pin) { setPinModalOpen(false); router.push("/clinician"); }
+                  else { setPinError(true); setPinEntry(""); }
+                }}
+              >
+                Unlock
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -114,7 +114,7 @@ export default function NewClientPage() {
         )}
         {step === 5 && (
           <SetupSummary
-            profile={{ name, pin, restrictions, targets }}
+            profile={{ name, pin, restrictions, targets, conditionTags }}
             onConfirm={handleConfirm}
             onBack={() => setStep(4)}
           />

@@ -23,7 +23,7 @@ const SIZES = {
 export function Button({ variant = "primary", size = "md", className = "", children, ...props }: Props) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive/60 focus-visible:ring-offset-1 ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
       {...props}
     >
       {children}

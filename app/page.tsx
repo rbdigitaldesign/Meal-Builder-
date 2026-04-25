@@ -15,8 +15,7 @@ export default function RootPage() {
     if (profile?.setupComplete) {
       router.replace("/dashboard");
     } else {
-      const clientId = localStorage.getItem("meal-builder-client-id");
-      router.replace(clientId ? "/patient/login" : "/patient/login");
+      router.replace("/patient/login");
     }
   }, [_hasHydrated, profile, router]);
 

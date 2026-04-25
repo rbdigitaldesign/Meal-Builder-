@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 
 const OPTIONS: { key: DietaryRestriction; label: string; description: string }[] = [
   { key: "vegetarian", label: "Vegetarian",  description: "No meat or fish" },
-  { key: "vegan",      label: "Vegan",       description: "No animal products" },
+  { key: "vegan",      label: "Vegan",       description: "No animal products — includes vegetarian" },
   { key: "glutenFree", label: "Gluten-free", description: "No wheat, barley or rye" },
   { key: "dairyFree",  label: "Dairy-free",  description: "No milk or dairy products" },
   { key: "nutFree",    label: "Nut-free",    description: "No tree nuts or peanuts" },
@@ -21,8 +21,8 @@ interface Props {
 export function DietaryRestrictionsStep({ selected, onChange, onNext, onBack }: Props) {
   function toggle(key: DietaryRestriction) {
     if (selected.includes(key)) {
-      // Removing vegan also removes vegetarian
-      const toRemove = key === "vegan" ? ["vegan"] : [key];
+      // Removing vegan also removes vegetarian (it was auto-added)
+      const toRemove = key === "vegan" ? ["vegan", "vegetarian"] : [key];
       onChange(selected.filter((r) => !toRemove.includes(r)));
     } else {
       // Adding vegan auto-adds vegetarian
