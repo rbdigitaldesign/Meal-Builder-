@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { Food, MealCategory, DietaryRestriction, MealItem } from "@/lib/types";
 import { MEAL_CATEGORY_LABELS, MEAL_CATEGORY_HINTS } from "@/lib/types";
 import { FOODS_BY_CATEGORY, DATA_SOURCES } from "@/data/foods";
@@ -38,6 +39,31 @@ interface Props {
 
 export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPortionChange }: Props) {
   const { display: displayEnergy, toggle: toggleUnit, unit } = useEnergyUnit();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+
+  function startEdit(food: Food, portionGrams: number) {
+    const val = food.servingUnit
+      ? String(Math.round(portionGrams / food.servingUnit.gramsPerUnit))
+      : String(portionGrams);
+    setEditValue(val);
+    setEditingId(food.id);
+  }
+
+  function commitEdit(food: Food) {
+    const num = parseInt(editValue, 10);
+    if (!isNaN(num) && num > 0) {
+      if (food.servingUnit) {
+        const { gramsPerUnit, minUnits = 1, maxUnits = 10 } = food.servingUnit;
+        const clamped = Math.min(maxUnits, Math.max(minUnits, num));
+        onPortionChange(food.id, clamped * gramsPerUnit);
+      } else {
+        const clamped = Math.min(PORTION_MAX, Math.max(PORTION_MIN, num));
+        onPortionChange(food.id, clamped);
+      }
+    }
+    setEditingId(null);
+  }
 
   function getFiltered(cat: MealCategory): Food[] {
     return FOODS_BY_CATEGORY[cat].filter((f) =>
@@ -164,9 +190,30 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
                             >
                               −
                             </button>
-                            <span className="text-sm font-semibold text-brand-forest tabular-nums min-w-[4rem] text-center">
-                              {getPortionDisplay(food, portion)}
-                            </span>
+                            {editingId === food.id ? (
+                              <input
+                                type="number"
+                                inputMode="numeric"
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                onBlur={() => commitEdit(food)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") e.currentTarget.blur();
+                                  if (e.key === "Escape") setEditingId(null);
+                                }}
+                                onFocus={(e) => e.target.select()}
+                                autoFocus
+                                className="text-sm font-semibold text-brand-forest tabular-nums w-16 text-center bg-brand-sage/20 border border-brand-olive rounded-lg px-1 py-0.5 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              />
+                            ) : (
+                              <button
+                                onClick={() => startEdit(food, portion)}
+                                title="Click to edit amount"
+                                className="text-sm font-semibold text-brand-forest tabular-nums min-w-[4rem] text-center rounded-lg px-2 py-0.5 hover:bg-brand-sage/20 transition-colors cursor-text"
+                              >
+                                {getPortionDisplay(food, portion)}
+                              </button>
+                            )}
                             <button
                               onClick={() => changePortion(food, portion, +1)}
                               disabled={isAtMax(food, portion)}

@@ -119,18 +119,18 @@ export default function DashboardPage() {
         </div>
 
         {/* Reset day */}
-        <div className="pt-2 border-t border-brand-warm">
+        <div className="pt-4 border-t border-brand-warm flex justify-center">
           <Button
-            variant="ghost"
-            size="sm"
+            variant="secondary"
+            size="md"
             onClick={() => {
               if (confirm("Clear all of today's meals and start fresh?")) {
                 resetDay();
               }
             }}
-            className="text-stone-400"
+            className="text-red-500 border-red-200 hover:bg-red-50"
           >
-            Reset today&apos;s meals
+            ↺ Reset today&apos;s meals
           </Button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { MealType, DietaryRestriction, MealItem, NutritionalTarget, DailyLog, Recipe } from "@/lib/types";
 import { NUTRIENT_LABELS } from "@/lib/types";
 import { RECIPES, resolveRecipeItems } from "@/data/recipes";
@@ -60,6 +61,15 @@ interface Props {
 
 export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, targets, onApply }: Props) {
   const { display: displayEnergy } = useEnergyUnit();
+  const [expandedInstructions, setExpandedInstructions] = useState<Set<string>>(new Set());
+
+  function toggleInstructions(recipeId: string) {
+    setExpandedInstructions((prev) => {
+      const next = new Set(prev);
+      if (next.has(recipeId)) { next.delete(recipeId); } else { next.add(recipeId); }
+      return next;
+    });
+  }
 
   const filtered = RECIPES.filter(
     (r) =>
@@ -119,6 +129,16 @@ export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, t
               key={recipe.id}
               className="bg-white rounded-2xl border border-brand-warm overflow-hidden"
             >
+              {/* Hero image */}
+              {recipe.imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={recipe.imageUrl}
+                  alt={recipe.name}
+                  className="w-full h-48 object-cover"
+                />
+              )}
+
               {/* Card header */}
               <div className="px-4 pt-4 pb-3">
                 <div className="flex items-start justify-between gap-2">
@@ -185,6 +205,31 @@ export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, t
                   ))}
                 </div>
               </div>
+
+              {/* Collapsible cooking instructions */}
+              {recipe.instructions && recipe.instructions.length > 0 && (
+                <div className="px-4 pb-3 border-t border-stone-100">
+                  <button
+                    onClick={() => toggleInstructions(recipe.id)}
+                    className="flex items-center gap-1.5 text-xs text-brand-olive font-medium mt-2 hover:text-brand-forest transition-colors"
+                  >
+                    <span>{expandedInstructions.has(recipe.id) ? "▲" : "▼"}</span>
+                    {expandedInstructions.has(recipe.id) ? "Hide instructions" : "How to make this"}
+                  </button>
+                  {expandedInstructions.has(recipe.id) && (
+                    <ol className="mt-2 space-y-1.5 list-none">
+                      {recipe.instructions.map((step, i) => (
+                        <li key={i} className="flex gap-2 text-xs text-stone-600">
+                          <span className="flex-shrink-0 w-4 h-4 rounded-full bg-brand-sage/40 text-brand-forest font-semibold text-[10px] flex items-center justify-center mt-0.5">
+                            {i + 1}
+                          </span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </div>
+              )}
 
               {/* Apply button */}
               <div className="px-4 pb-4">

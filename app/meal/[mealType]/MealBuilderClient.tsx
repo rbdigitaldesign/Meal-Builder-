@@ -8,7 +8,6 @@ import { MEAL_TYPE_LABELS } from "@/lib/types";
 import { useProfileStore } from "@/store/profileStore";
 import { useMealStore } from "@/store/mealStore";
 import { MealScaffold } from "@/components/meal/MealScaffold";
-import { MealSummaryPanel } from "@/components/meal/MealSummaryPanel";
 import { DailyProgressStrip } from "@/components/meal/DailyProgressStrip";
 import { RecipePicker } from "@/components/meal/RecipePicker";
 import { Button } from "@/components/ui/Button";
@@ -36,15 +35,10 @@ export default function MealBuilderClient({ params }: PageProps) {
   const mealType = mealTypeRaw as MealType;
   const router = useRouter();
 
-  const { profile } = useProfileStore();
+  const { profile, _hasHydrated } = useProfileStore();
   const { dailyLog, addItemToMeal, removeItemFromMeal, updateItemPortion, clearMeal } = useMealStore();
 
   const [activeMode, setActiveMode] = useState<"recipes" | "build">("recipes");
-
-  if (!profile?.setupComplete) {
-    router.replace("/clinician");
-    return null;
-  }
 
   const meal = dailyLog.meals[mealType];
   const items = meal?.items ?? [];
@@ -58,6 +52,14 @@ export default function MealBuilderClient({ params }: PageProps) {
       if (syncTimer.current) clearTimeout(syncTimer.current);
     };
   }, [items, mealType]);
+
+  // Wait for store to rehydrate from localStorage before deciding to redirect
+  if (!_hasHydrated) return null;
+
+  if (!profile?.setupComplete) {
+    router.replace("/clinician");
+    return null;
+  }
 
   function handleAdd(food: Food) {
     addItemToMeal(mealType, { food, portionGrams: 100 });
@@ -100,7 +102,7 @@ export default function MealBuilderClient({ params }: PageProps) {
         <DailyProgressStrip targets={profile.targets} dailyLog={dailyLog} />
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         {/* Mode tabs */}
         <div className="flex rounded-xl bg-stone-100 p-1 gap-1">
           <button
@@ -144,9 +146,6 @@ export default function MealBuilderClient({ params }: PageProps) {
             onPortionChange={(foodId, grams) => updateItemPortion(mealType, foodId, grams)}
           />
         )}
-
-        {/* Detailed nutritional summary (absorption notes + full breakdown) */}
-        <MealSummaryPanel items={items} targets={profile.targets} />
 
         <div className="pb-6">
           <Button onClick={() => router.push("/dashboard")} className="w-full">

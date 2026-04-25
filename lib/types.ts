@@ -155,4 +155,6 @@ export interface Recipe {
   highlightedNutrients: NutrientKey[];
   prepTime?: string;
   note?: string;
+  instructions?: string[];
+  imageUrl?: string;
 }
