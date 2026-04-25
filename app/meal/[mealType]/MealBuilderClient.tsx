@@ -7,10 +7,9 @@ import type { Food, MealType } from "@/lib/types";
 import { MEAL_TYPE_LABELS } from "@/lib/types";
 import { useProfileStore } from "@/store/profileStore";
 import { useMealStore } from "@/store/mealStore";
-import { FoodSearch } from "@/components/meal/FoodSearch";
+import { MealScaffold } from "@/components/meal/MealScaffold";
 import { MealItemRow } from "@/components/meal/MealItemRow";
 import { MealSummaryPanel } from "@/components/meal/MealSummaryPanel";
-import { NutrientSuggestions } from "@/components/meal/NutrientSuggestions";
 import { Button } from "@/components/ui/Button";
 
 interface PageProps {
@@ -32,10 +31,13 @@ export default function MealBuilderClient({ params }: PageProps) {
 
   const meal = dailyLog.meals[mealType];
   const items = meal?.items ?? [];
-  const selectedIds = new Set(items.map((i) => i.food.id));
 
   function handleAdd(food: Food) {
     addItemToMeal(mealType, { food, portionGrams: 100 });
+  }
+
+  function handleRemove(foodId: string) {
+    removeItemFromMeal(mealType, foodId);
   }
 
   const label = MEAL_TYPE_LABELS[mealType] ?? mealType;
@@ -59,11 +61,19 @@ export default function MealBuilderClient({ params }: PageProps) {
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        {/* Current meal items */}
+        {/* Build Your Plate scaffold */}
+        <MealScaffold
+          restrictions={profile.restrictions}
+          currentItems={items}
+          onAdd={handleAdd}
+          onRemove={handleRemove}
+        />
+
+        {/* Portion adjusters for selected foods */}
         {items.length > 0 && (
           <section>
             <h2 className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">
-              In this meal
+              Adjust portions
             </h2>
             <div className="space-y-2">
               {items.map((item) => (
@@ -78,28 +88,8 @@ export default function MealBuilderClient({ params }: PageProps) {
           </section>
         )}
 
-        {/* Nutritional summary */}
+        {/* Collapsible nutritional summary */}
         <MealSummaryPanel items={items} targets={profile.targets} />
-
-        {/* Suggestions */}
-        <NutrientSuggestions
-          items={items}
-          targets={profile.targets}
-          restrictions={profile.restrictions}
-          onAdd={handleAdd}
-        />
-
-        {/* Food search */}
-        <section>
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">
-            Add foods
-          </h2>
-          <FoodSearch
-            restrictions={profile.restrictions}
-            onSelect={handleAdd}
-            selectedIds={selectedIds}
-          />
-        </section>
 
         <div className="pb-6">
           <Button onClick={() => router.push("/dashboard")} className="w-full">
