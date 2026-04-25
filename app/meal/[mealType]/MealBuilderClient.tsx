@@ -1,9 +1,9 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { Food, MealType } from "@/lib/types";
+import type { Food, MealItem, MealType } from "@/lib/types";
 import { MEAL_TYPE_LABELS } from "@/lib/types";
 import { useProfileStore } from "@/store/profileStore";
 import { useMealStore } from "@/store/mealStore";
@@ -13,6 +13,20 @@ import { Button } from "@/components/ui/Button";
 
 interface PageProps {
   params: Promise<{ mealType: string }>;
+}
+
+function syncMeal(mealType: string, items: MealItem[]) {
+  const clientId = typeof window !== "undefined"
+    ? localStorage.getItem("meal-builder-client-id")
+    : null;
+  if (!clientId) return;
+
+  const date = new Date().toISOString().slice(0, 10);
+  fetch("/api/meal-logs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ clientId, date, mealType, items }),
+  }).catch(() => {});
 }
 
 export default function MealBuilderClient({ params }: PageProps) {
@@ -30,6 +44,16 @@ export default function MealBuilderClient({ params }: PageProps) {
 
   const meal = dailyLog.meals[mealType];
   const items = meal?.items ?? [];
+
+  // Debounced sync to Supabase via API route
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (syncTimer.current) clearTimeout(syncTimer.current);
+    syncTimer.current = setTimeout(() => syncMeal(mealType, items), 1500);
+    return () => {
+      if (syncTimer.current) clearTimeout(syncTimer.current);
+    };
+  }, [items, mealType]);
 
   function handleAdd(food: Food) {
     addItemToMeal(mealType, { food, portionGrams: 100 });

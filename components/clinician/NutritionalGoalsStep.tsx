@@ -13,9 +13,10 @@ interface Props {
   onChange: (targets: NutritionalTarget[]) => void;
   onNext: () => void;
   onBack: () => void;
+  submitLabel?: string;
 }
 
-export function NutritionalGoalsStep({ targets, onChange, onNext, onBack }: Props) {
+export function NutritionalGoalsStep({ targets, onChange, onNext, onBack, submitLabel = "Review" }: Props) {
   function updateTarget(nutrient: NutrientKey, value: number) {
     onChange(targets.map((t) => t.nutrient === nutrient ? { ...t, dailyTarget: value } : t));
   }
@@ -73,7 +74,7 @@ export function NutritionalGoalsStep({ targets, onChange, onNext, onBack }: Prop
       </div>
       <div className="flex gap-3">
         <Button variant="secondary" onClick={onBack} className="flex-1">Back</Button>
-        <Button onClick={onNext} className="flex-1">Review</Button>
+        <Button onClick={onNext} className="flex-1">{submitLabel}</Button>
       </div>
     </div>
   );
