@@ -1,4 +1,5 @@
-// Nutrition data sourced from vital.ly (https://www.vital.ly) and USDA FoodData Central.
+// Nutrition data sourced from the Australian Food Composition Database (AFCD),
+// published by Food Standards Australia New Zealand (FSANZ).
 // All values are per 100g unless otherwise noted.
 
 import type { Food, MealCategory } from "@/lib/types";
@@ -26,6 +27,8 @@ export const FOODS_BY_ID: Record<string, Food> = Object.fromEntries(
 );
 
 export const DATA_SOURCES = [
-  { label: "vital.ly", url: "https://www.vital.ly" },
-  { label: "USDA FoodData Central", url: "https://fdc.nal.usda.gov" },
+  {
+    label: "Australian Food Composition Database (FSANZ)",
+    url: "https://www.foodstandards.gov.au/science-and-research/monographs-and-technical-reports/australian-food-composition-database",
+  },
 ];
