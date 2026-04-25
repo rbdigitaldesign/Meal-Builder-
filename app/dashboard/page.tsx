@@ -93,11 +93,15 @@ export default function DashboardPage() {
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
-        {/* Daily progress */}
-        <DailyNutrientChart summaries={summaries} targets={profile.targets} />
-
-        {/* Patient's health plan — read-only view of practitioner-set goals */}
-        {isSupabasePatient && <HealthPlanCard profile={profile} />}
+        {/* Daily progress + health plan side by side */}
+        {isSupabasePatient ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+            <DailyNutrientChart summaries={summaries} targets={profile.targets} />
+            <HealthPlanCard profile={profile} />
+          </div>
+        ) : (
+          <DailyNutrientChart summaries={summaries} targets={profile.targets} />
+        )}
 
         {/* Meals */}
         <div>
