@@ -6,17 +6,19 @@ import { useProfileStore } from "@/store/profileStore";
 
 export default function RootPage() {
   const router = useRouter();
-  const { profile } = useProfileStore();
+  const profile = useProfileStore((s) => s.profile);
+  const _hasHydrated = useProfileStore((s) => s._hasHydrated);
 
   useEffect(() => {
+    if (!_hasHydrated) return;
+
     if (profile?.setupComplete) {
       router.replace("/dashboard");
     } else {
-      // Check if there's a client ID stored (returning patient)
       const clientId = localStorage.getItem("meal-builder-client-id");
       router.replace(clientId ? "/patient/login" : "/patient/login");
     }
-  }, [profile, router]);
+  }, [_hasHydrated, profile, router]);
 
   return (
     <div className="min-h-screen bg-brand-cream flex items-center justify-center">
