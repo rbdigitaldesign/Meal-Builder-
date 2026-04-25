@@ -21,9 +21,10 @@ interface Props {
   meal: Meal | null;
   mealType: "breakfast" | "lunch" | "dinner" | "snack";
   targets: NutritionalTarget[];
+  readOnly?: boolean;
 }
 
-export function MealSummaryCard({ meal, mealType, targets }: Props) {
+export function MealSummaryCard({ meal, mealType, targets, readOnly = false }: Props) {
   const items = meal?.items ?? [];
   const totals = calculateMealTotals(items);
   const summaries = buildNutrientSummaries(totals, targets);
@@ -34,9 +35,8 @@ export function MealSummaryCard({ meal, mealType, targets }: Props) {
 
   const { icon, bg, color } = MEAL_ICONS[mealType];
 
-  return (
-    <Link href={`/meal/${mealType}`}>
-      <Card className="hover:border-brand-sage transition-colors cursor-pointer">
+  const inner = (
+      <Card className={!readOnly ? "hover:border-brand-sage transition-colors cursor-pointer" : "opacity-90"}>
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-2xl ${bg} flex items-center justify-center flex-shrink-0`}>
@@ -46,7 +46,9 @@ export function MealSummaryCard({ meal, mealType, targets }: Props) {
               <p className="font-semibold text-brand-black">{MEAL_TYPE_LABELS[mealType]}</p>
               <p className="text-xs text-stone-400 mt-0.5">
                 {items.length === 0
-                  ? <span className="text-brand-olive/70">Tap to add foods →</span>
+                  ? readOnly
+                    ? <span className="text-stone-400">Nothing logged</span>
+                    : <span className="text-brand-olive/70">Tap to add foods →</span>
                   : <>
                       {items.length} food{items.length !== 1 ? "s" : ""} ·{" "}
                       <button
@@ -60,7 +62,7 @@ export function MealSummaryCard({ meal, mealType, targets }: Props) {
               </p>
             </div>
           </div>
-          <span className="text-xs text-brand-olive font-medium shrink-0">Edit →</span>
+          {!readOnly && <span className="text-xs text-brand-olive font-medium shrink-0">Edit →</span>}
         </div>
 
         {items.length > 0 && criticals.length > 0 && (
@@ -77,6 +79,7 @@ export function MealSummaryCard({ meal, mealType, targets }: Props) {
           </div>
         )}
       </Card>
-    </Link>
   );
+
+  return readOnly ? inner : <Link href={`/meal/${mealType}`}>{inner}</Link>;
 }
