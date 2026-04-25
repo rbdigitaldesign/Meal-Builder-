@@ -18,6 +18,13 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["protein", "iron", "vitaminC"],
     prepTime: "20 min",
     note: "Vitamin C from peppers helps absorb the iron in spinach and eggs.",
+    instructions: [
+      "Preheat oven to 180°C.",
+      "Whisk eggs with salt and pepper in a bowl.",
+      "Heat olive oil in an oven-safe pan. Sauté spinach and capsicum 2–3 min until softened.",
+      "Pour the egg mixture over the vegetables and stir briefly.",
+      "Transfer pan to oven and bake 15–18 min until the frittata is set and golden at the edges.",
+    ],
   },
   {
     id: "overnight-oats",
@@ -33,6 +40,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "calcium", "fiber"],
     prepTime: "5 min",
+    instructions: [
+      "Combine oats, chia seeds and yoghurt in a jar or bowl.",
+      "Add a splash of milk (dairy or plant-based) and stir well.",
+      "Cover and refrigerate overnight or for at least 4 hours.",
+      "In the morning, stir and top with fresh or frozen berries before serving.",
+    ],
   },
   {
     id: "smashed-avo-toast",
@@ -48,6 +61,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "fat", "iron"],
     prepTime: "10 min",
+    instructions: [
+      "Toast the sourdough until golden.",
+      "Mash avocado with a squeeze of lemon juice, salt and pepper.",
+      "Fry or poach eggs to your liking.",
+      "Layer spinach on toast, spread the smashed avo, then top with the eggs.",
+    ],
   },
   {
     id: "smoothie-bowl",
@@ -64,6 +83,12 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "vitaminC", "fiber"],
     prepTime: "5 min",
     note: "High in iron. The vitamin C in berries boosts iron absorption.",
+    instructions: [
+      "Blend fortified oatmeal with mixed berries and a splash of milk until smooth.",
+      "Pour into a bowl — it should be thick enough to hold toppings.",
+      "Top with strawberries and chia seeds.",
+      "Eat immediately or keep refrigerated for up to 1 hour.",
+    ],
   },
   {
     id: "greek-yogurt-bowl",
@@ -79,6 +104,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "calcium", "vitaminC"],
     prepTime: "5 min",
+    instructions: [
+      "Spoon Greek yoghurt into a bowl.",
+      "Top with mixed berries and ground flaxseeds.",
+      "Scatter roughly chopped almonds over the top.",
+      "Serve immediately.",
+    ],
   },
 
   // ── LUNCH ────────────────────────────────────────────────────────────────
@@ -98,6 +129,13 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "protein", "fiber"],
     prepTime: "25 min",
     note: "High in iron. Add a squeeze of lemon or side of bell pepper to boost absorption.",
+    instructions: [
+      "Heat olive oil in a pot over medium heat. Add garlic and onion if using, cook 2 min.",
+      "Add rinsed lentils, chopped tomato and 600ml water. Bring to a boil.",
+      "Reduce heat and simmer 20 min, stirring occasionally, until lentils are soft.",
+      "Stir in spinach and cook 2 min until wilted. Season with salt and pepper.",
+      "Serve with sliced sourdough on the side.",
+    ],
   },
   {
     id: "chickpea-buddha-bowl",
@@ -115,6 +153,13 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "protein", "vitaminC"],
     prepTime: "15 min",
     note: "Excellent iron + vitamin C combination for maximum absorption.",
+    instructions: [
+      "Cook quinoa per packet instructions (usually 15 min in 2× water).",
+      "Rinse and drain chickpeas. Massage kale with a pinch of salt until slightly softened.",
+      "Whisk tahini with lemon juice and 2–3 tbsp water to make a dressing.",
+      "Assemble bowl: quinoa base, then chickpeas, kale and sliced capsicum.",
+      "Drizzle tahini dressing over everything and serve.",
+    ],
   },
   {
     id: "tuna-salad-wrap",
@@ -131,6 +176,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "vitaminB12", "fat"],
     prepTime: "5 min",
+    instructions: [
+      "Drain and flake the tuna into a bowl.",
+      "Mash in the avocado with a squeeze of lemon juice, salt and pepper.",
+      "Layer leafy greens and sliced tomato on the bread.",
+      "Spoon the tuna-avo mixture on top and serve open or folded.",
+    ],
   },
   {
     id: "salmon-brown-rice",
@@ -146,6 +197,13 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["vitaminB12", "protein", "vitaminC"],
     prepTime: "20 min",
+    instructions: [
+      "Cook brown rice per packet (about 25 min).",
+      "Season salmon with salt and pepper. Heat olive oil in a pan over medium-high heat.",
+      "Place salmon skin-side down and cook 4 min. Flip and cook 2 min more until just cooked through.",
+      "Steam broccoli 3–4 min until tender-crisp.",
+      "Plate rice, top with broccoli and salmon, drizzle with remaining olive oil.",
+    ],
   },
   {
     id: "tofu-stir-fry",
@@ -162,6 +220,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "calcium", "vitaminC"],
     prepTime: "15 min",
+    instructions: [
+      "Press tofu dry with paper towels. Cut into 2cm cubes.",
+      "Fry in olive oil in a hot pan 4–5 min per side until golden and crisp.",
+      "Add broccoli and capsicum, stir-fry 3–4 min. Season with soy sauce if desired.",
+      "Serve over cooked brown rice.",
+    ],
   },
   {
     id: "sardine-rice-cakes",
@@ -177,6 +241,11 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["vitaminB12", "calcium", "iron"],
     prepTime: "5 min",
+    instructions: [
+      "Drain the sardines and arrange on rice cakes.",
+      "Top with sliced tomato and leafy greens.",
+      "Season with a squeeze of lemon juice and black pepper.",
+    ],
   },
 
   // ── DINNER ───────────────────────────────────────────────────────────────
@@ -195,6 +264,13 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "zinc", "vitaminC"],
     prepTime: "30 min",
     note: "Haem iron from beef is highly bioavailable. Vitamin C from broccoli helps further.",
+    instructions: [
+      "Preheat oven to 200°C. Cube sweet potato, toss in olive oil and roast 25 min until golden.",
+      "Season beef with salt and pepper. Heat a pan over high heat.",
+      "Sear beef 3–4 min per side for medium. Rest 2 min before slicing.",
+      "Steam or microwave broccoli 3–4 min until tender.",
+      "Plate everything together.",
+    ],
   },
   {
     id: "tempeh-stir-fry",
@@ -211,6 +287,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "iron", "vitaminC"],
     prepTime: "20 min",
+    instructions: [
+      "Slice tempeh and marinate in soy sauce, garlic and a splash of water for 10 min.",
+      "Heat olive oil in a pan over medium-high heat. Fry tempeh until golden, about 3–4 min per side.",
+      "Add broccoli and capsicum to the pan. Stir-fry 4 min until just tender.",
+      "Serve over cooked brown rice.",
+    ],
   },
   {
     id: "lentil-dahl",
@@ -228,6 +310,13 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "protein", "fiber"],
     prepTime: "30 min",
     note: "Iron-rich combination. Pair with a squeeze of lemon to maximise absorption.",
+    instructions: [
+      "Heat olive oil in a pot. Add onion, garlic, cumin and turmeric, cook 2 min.",
+      "Add rinsed lentils, chopped tomato and 500ml water. Bring to a boil.",
+      "Simmer 25 min, stirring occasionally, until thick and lentils are soft.",
+      "Stir in spinach, cook 2 min. Cook brown rice separately per packet.",
+      "Serve dahl over rice with a dollop of coconut yoghurt.",
+    ],
   },
   {
     id: "chicken-veg",
@@ -243,6 +332,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "vitaminC", "fiber"],
     prepTime: "35 min",
+    instructions: [
+      "Preheat oven to 200°C. Cube sweet potato, toss in olive oil, roast 20 min.",
+      "Season chicken breast. Add to the tray with the sweet potato, roast 25 min until cooked through.",
+      "Add broccoli to the tray in the last 10 min.",
+      "Rest chicken 2 min before serving.",
+    ],
   },
   {
     id: "soybeans-greens",
@@ -259,6 +354,12 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "calcium", "protein"],
     prepTime: "20 min",
     note: "Very high in iron and calcium — great for vegetarians and vegans.",
+    instructions: [
+      "Cook brown rice per packet. Rinse canned soybeans or cook from dry.",
+      "Wilt Swiss chard in a pan with a splash of water over medium heat, 3–4 min.",
+      "Whisk tahini with lemon juice and 2–3 tbsp water to make a thin dressing.",
+      "Assemble bowl: rice base, soybeans and Swiss chard. Drizzle tahini dressing over top.",
+    ],
   },
 
   // ── SNACK ────────────────────────────────────────────────────────────────
@@ -276,6 +377,11 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["iron", "vitaminC", "fiber"],
     prepTime: "5 min",
+    instructions: [
+      "Blend chickpeas, tahini, lemon juice, a clove of garlic and 2 tbsp water until smooth.",
+      "Season with salt. Add more water to reach your preferred consistency.",
+      "Serve in a bowl with carrot sticks and capsicum slices for dipping.",
+    ],
   },
   {
     id: "nut-seed-mix",
@@ -292,6 +398,10 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "zinc", "calcium"],
     prepTime: "2 min",
     note: "Iron-rich snack. Eat alongside a vitamin C source to boost absorption.",
+    instructions: [
+      "Combine almonds, pumpkin seeds, sunflower seeds and dried apricots in a bowl.",
+      "Mix and serve immediately, or store in an airtight container for up to 1 week.",
+    ],
   },
   {
     id: "yogurt-berry-bowl",
@@ -306,6 +416,11 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "calcium", "vitaminC"],
     prepTime: "3 min",
+    instructions: [
+      "Spoon Greek yoghurt into a bowl.",
+      "Top with mixed berries and chia seeds.",
+      "Let sit 2–3 min for the chia to absorb moisture before eating.",
+    ],
   },
   {
     id: "edamame-bowl",
@@ -320,6 +435,11 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "iron", "vitaminC"],
     prepTime: "5 min",
+    instructions: [
+      "Steam or microwave edamame in the pod 3–4 min. Season with sea salt.",
+      "Cut carrot into sticks and slice cucumber.",
+      "Serve edamame alongside the veg for a simple, filling snack.",
+    ],
   },
 
   // ── ADDITIONAL BREAKFAST ─────────────────────────────────────────────────
@@ -338,6 +458,12 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "calcium", "vitaminC"],
     prepTime: "5 min + overnight",
     note: "High iron + vitamin C combo — berries boost absorption from chia seeds.",
+    instructions: [
+      "Mix chia seeds with coconut yoghurt and a splash of plant milk in a jar.",
+      "Stir well so chia seeds are evenly distributed.",
+      "Refrigerate overnight or for at least 4 hours until thick and pudding-like.",
+      "Top with mixed berries and strawberries before serving.",
+    ],
   },
   {
     id: "egg-chard-scramble",
@@ -353,6 +479,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["iron", "vitaminB12", "protein"],
     prepTime: "10 min",
+    instructions: [
+      "Heat olive oil in a pan over medium heat. Add Swiss chard and cook 2–3 min until wilted.",
+      "Whisk eggs with salt and pepper, pour over the chard.",
+      "Stir gently on low heat until eggs are just set — don't overcook.",
+      "Toast the bread and serve the scramble on top.",
+    ],
   },
   {
     id: "sardine-toast",
@@ -368,6 +500,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["vitaminB12", "calcium", "iron"],
     prepTime: "5 min",
+    instructions: [
+      "Toast the sourdough until golden.",
+      "Drain sardines and arrange on toast.",
+      "Top with sliced tomato and rocket.",
+      "Squeeze lemon juice over and season with black pepper.",
+    ],
   },
   {
     id: "nutty-power-oats",
@@ -385,6 +523,12 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "zinc", "calcium"],
     prepTime: "5 min",
     note: "Almonds and pumpkin seeds are excellent iron and zinc sources.",
+    instructions: [
+      "Cook oats per packet (stovetop or microwave).",
+      "Spoon yoghurt over the hot oats.",
+      "Top with pumpkin seeds, roughly chopped almonds and berries.",
+      "Drizzle with honey if desired.",
+    ],
   },
   {
     id: "tempeh-hash",
@@ -401,6 +545,11 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "iron", "vitaminC"],
     prepTime: "15 min",
+    instructions: [
+      "Crumble tempeh into a hot pan with olive oil. Cook until golden, 5–6 min.",
+      "Add sliced capsicum and spinach, cook 3 min until spinach wilts.",
+      "Toast sourdough. Pile the tempeh hash on top and serve.",
+    ],
   },
 
   // ── ADDITIONAL LUNCH ─────────────────────────────────────────────────────
@@ -420,6 +569,12 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "zinc", "vitaminB12"],
     prepTime: "15 min",
     note: "Haem iron from beef is the most easily absorbed form.",
+    instructions: [
+      "Season beef with salt and pepper. Heat olive oil in a pan over high heat.",
+      "Sear beef 3–4 min per side. Rest 2 min then slice thinly.",
+      "Toss rocket and tomato with olive oil and a squeeze of lemon.",
+      "Toast sourdough. Plate salad over bread, top with sliced beef.",
+    ],
   },
   {
     id: "edamame-quinoa-bowl",
@@ -437,6 +592,12 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "protein", "vitaminC"],
     prepTime: "15 min",
     note: "Great iron + vitamin C combination for maximum absorption.",
+    instructions: [
+      "Cook quinoa per packet instructions.",
+      "Steam or microwave edamame 3–4 min, season with salt.",
+      "Whisk tahini with lemon juice and 2–3 tbsp water.",
+      "Assemble bowl: quinoa, edamame, spinach and sliced capsicum. Drizzle dressing.",
+    ],
   },
   {
     id: "tempeh-quinoa-salad",
@@ -453,6 +614,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["iron", "zinc", "protein"],
     prepTime: "15 min",
+    instructions: [
+      "Cook quinoa per packet instructions.",
+      "Slice tempeh and pan-fry in olive oil until golden, 3–4 min per side.",
+      "Massage kale with a pinch of salt until slightly softened.",
+      "Toss everything together with pumpkin seeds and a squeeze of lemon.",
+    ],
   },
   {
     id: "cottage-cheese-bowl",
@@ -469,6 +636,11 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "calcium", "vitaminC"],
     prepTime: "5 min",
+    instructions: [
+      "Spoon cottage cheese into a bowl.",
+      "Add leafy greens, sliced cucumber and diced capsicum.",
+      "Serve alongside rice cakes for scooping.",
+    ],
   },
 
   // ── ADDITIONAL DINNER ────────────────────────────────────────────────────
@@ -487,6 +659,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["protein", "vitaminC", "vitaminB12"],
     prepTime: "20 min",
+    instructions: [
+      "Cook quinoa per packet instructions.",
+      "Toss prawns in olive oil, salt and pepper. Cook in a hot pan 2–3 min per side until pink.",
+      "Add broccoli and capsicum, stir-fry 3 min until just tender.",
+      "Plate over quinoa and serve.",
+    ],
   },
   {
     id: "chickpea-sweet-potato-curry",
@@ -504,6 +682,12 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "fiber", "vitaminC"],
     prepTime: "30 min",
     note: "Iron + vitamin C in one dish — ideal for vegetarians and vegans.",
+    instructions: [
+      "Preheat oven to 200°C. Cube sweet potato, toss in oil and roast 20 min.",
+      "Fry onion and garlic with curry powder 2 min. Add chickpeas, tomato paste and 200ml water.",
+      "Simmer 15 min. Add roasted sweet potato and spinach, cook 2 min.",
+      "Cook brown rice per packet. Serve curry over rice with coconut yoghurt.",
+    ],
   },
   {
     id: "chicken-liver-rice",
@@ -519,6 +703,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["iron", "vitaminB12", "zinc"],
     prepTime: "20 min",
+    instructions: [
+      "Cook brown rice per packet.",
+      "Pat chicken liver dry. Season with salt and pepper.",
+      "Heat olive oil in a pan over medium-high heat. Fry liver 3 min per side until cooked through but still slightly pink inside.",
+      "Wilt spinach in the same pan 1–2 min. Serve liver and spinach over rice.",
+    ],
   },
   {
     id: "sardine-pasta",
@@ -535,6 +725,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["vitaminB12", "calcium", "iron"],
     prepTime: "20 min",
+    instructions: [
+      "Cook legume pasta per packet (usually 8–10 min).",
+      "Drain sardines and break into chunks.",
+      "Toss hot pasta with sardines, chopped tomato, spinach and olive oil.",
+      "Season with lemon juice and black pepper. Serve immediately.",
+    ],
   },
   {
     id: "beef-lentil-bowl",
@@ -551,6 +747,12 @@ export const RECIPES: Recipe[] = [
     ],
     highlightedNutrients: ["iron", "zinc", "vitaminB12"],
     prepTime: "25 min",
+    instructions: [
+      "Cook quinoa per packet. Warm lentils in a small pan.",
+      "Season beef with salt and pepper. Pan-fry over high heat 3–4 min per side. Rest 2 min, then slice.",
+      "Wilt Swiss chard in the same pan with a splash of water.",
+      "Assemble bowl: quinoa, lentils, Swiss chard, sliced beef. Drizzle with olive oil.",
+    ],
   },
   {
     id: "vegan-amaranth-bowl",
@@ -567,6 +769,12 @@ export const RECIPES: Recipe[] = [
     highlightedNutrients: ["iron", "calcium", "protein"],
     prepTime: "20 min",
     note: "One of the highest plant-based iron + calcium combinations in the database.",
+    instructions: [
+      "Cook amaranth in 2× water, simmering 20 min until fluffy. Rinse canned soybeans.",
+      "Massage kale with a pinch of salt until slightly softened.",
+      "Whisk tahini with lemon juice and 2–3 tbsp water.",
+      "Assemble bowl: amaranth base, soybeans and kale. Drizzle tahini dressing over top.",
+    ],
   },
 ];
 

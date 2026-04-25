@@ -41,11 +41,6 @@ export default function MealBuilderClient({ params }: PageProps) {
 
   const [activeMode, setActiveMode] = useState<"recipes" | "build">("recipes");
 
-  if (!profile?.setupComplete) {
-    router.replace("/clinician");
-    return null;
-  }
-
   const meal = dailyLog.meals[mealType];
   const items = meal?.items ?? [];
 
@@ -58,6 +53,11 @@ export default function MealBuilderClient({ params }: PageProps) {
       if (syncTimer.current) clearTimeout(syncTimer.current);
     };
   }, [items, mealType]);
+
+  if (!profile?.setupComplete) {
+    router.replace("/clinician");
+    return null;
+  }
 
   function handleAdd(food: Food) {
     addItemToMeal(mealType, { food, portionGrams: 100 });
