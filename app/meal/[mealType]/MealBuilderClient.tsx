@@ -8,7 +8,6 @@ import { MEAL_TYPE_LABELS } from "@/lib/types";
 import { useProfileStore } from "@/store/profileStore";
 import { useMealStore } from "@/store/mealStore";
 import { MealScaffold } from "@/components/meal/MealScaffold";
-import { MealSummaryPanel } from "@/components/meal/MealSummaryPanel";
 import { DailyProgressStrip } from "@/components/meal/DailyProgressStrip";
 import { RecipePicker } from "@/components/meal/RecipePicker";
 import { Button } from "@/components/ui/Button";
@@ -144,9 +143,6 @@ export default function MealBuilderClient({ params }: PageProps) {
             onPortionChange={(foodId, grams) => updateItemPortion(mealType, foodId, grams)}
           />
         )}
-
-        {/* Detailed nutritional summary (absorption notes + full breakdown) */}
-        <MealSummaryPanel items={items} targets={profile.targets} />
 
         <div className="pb-6">
           <Button onClick={() => router.push("/dashboard")} className="w-full">
