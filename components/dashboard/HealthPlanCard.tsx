@@ -102,7 +102,7 @@ export function HealthPlanCard({ profile, className }: Props) {
       )}
 
       <p className="text-xs text-stone-300 text-center pt-1 border-t border-brand-warm/50">
-        Contact your practitioner to update these goals
+        Contact Kelly to update these goals
       </p>
     </Card>
   );
