@@ -63,7 +63,7 @@ export function DailyNutrientChart({ summaries, targets, className }: Props) {
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Other targets</p>
           {recommended.map((s) => (
             <div key={s.nutrient}>
-              <div className="flex justify-between text-xs mb-1">
+              <div className="flex justify-between text-sm mb-1">
                 <span className="text-stone-600">{s.label}</span>
                 <span className="text-stone-400 tabular-nums">
                   {s.consumed}{s.unit} / {s.target}{s.unit}

@@ -44,17 +44,17 @@ export function DailyProgressStrip({ targets, dailyLog }: Props) {
             {/* Energy unit toggle pill */}
             <button
               onClick={toggleUnit}
-              className="flex items-center rounded-full border border-brand-warm bg-stone-50 text-[11px] font-medium overflow-hidden"
+              className="flex items-center rounded-full border border-brand-warm bg-stone-50 text-xs font-medium overflow-hidden"
               title="Switch energy units"
             >
-              <span className={`px-2 py-0.5 transition-colors ${unit === "kcal" ? "bg-brand-olive text-white" : "text-stone-400"}`}>kcal</span>
-              <span className={`px-2 py-0.5 transition-colors ${unit === "kJ"   ? "bg-brand-olive text-white" : "text-stone-400"}`}>kJ</span>
+              <span className={`px-2.5 py-1 transition-colors ${unit === "kcal" ? "bg-brand-olive text-white" : "text-stone-400"}`}>kcal</span>
+              <span className={`px-2.5 py-1 transition-colors ${unit === "kJ"   ? "bg-brand-olive text-white" : "text-stone-400"}`}>kJ</span>
             </button>
           </div>
           {recommended.length > 0 && (
             <button
               onClick={() => setShowAll((v) => !v)}
-              className="text-xs text-brand-olive hover:underline flex-shrink-0"
+              className="text-sm text-brand-olive hover:underline flex-shrink-0 py-1.5 px-2 -my-1 -mr-1 rounded-lg hover:bg-brand-sage/20 transition-colors min-h-[44px] flex items-center"
             >
               {showAll ? "Show less ↑" : "Show all ↓"}
             </button>

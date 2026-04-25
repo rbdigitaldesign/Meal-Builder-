@@ -116,7 +116,7 @@ export default function MealBuilderClient({ params }: PageProps) {
         <div className="flex rounded-xl bg-stone-100 p-1 gap-1">
           <button
             onClick={() => setActiveMode("recipes")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${
               activeMode === "recipes"
                 ? "bg-white text-brand-forest shadow-sm"
                 : "text-stone-500 hover:text-brand-forest"
@@ -126,7 +126,7 @@ export default function MealBuilderClient({ params }: PageProps) {
           </button>
           <button
             onClick={() => setActiveMode("build")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${
               activeMode === "build"
                 ? "bg-white text-brand-forest shadow-sm"
                 : "text-stone-500 hover:text-brand-forest"

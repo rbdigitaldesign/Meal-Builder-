@@ -120,7 +120,7 @@ export default function DashboardPage() {
             </div>
           </div>
           {isSupabasePatient ? (
-            <button onClick={handleSignOut} className="text-xs opacity-60 hover:opacity-100 transition-opacity">
+            <button onClick={handleSignOut} className="text-sm opacity-70 hover:opacity-100 transition-opacity py-2 px-3 -my-1 rounded-lg hover:bg-white/10 min-h-[44px] flex items-center">
               Sign out
             </button>
           ) : (
@@ -129,7 +129,7 @@ export default function DashboardPage() {
                 if (profile.pin) { setPinEntry(""); setPinError(false); setPinModalOpen(true); }
                 else router.push("/clinician");
               }}
-              className="text-xs opacity-60 hover:opacity-100 transition-opacity"
+              className="text-sm opacity-70 hover:opacity-100 transition-opacity py-2 px-3 -my-1 rounded-lg hover:bg-white/10 min-h-[44px] flex items-center"
             >
               Settings
             </button>
@@ -143,16 +143,16 @@ export default function DashboardPage() {
         <div className="flex items-center justify-center gap-4">
           <button
             onClick={() => setViewDate((d) => offsetDate(d, -1))}
-            className="w-8 h-8 rounded-full bg-white border border-brand-warm text-brand-forest hover:bg-brand-sage/20 flex items-center justify-center transition-colors text-sm font-medium"
+            className="w-11 h-11 rounded-full bg-white border border-brand-warm text-brand-forest hover:bg-brand-sage/20 flex items-center justify-center transition-colors text-xl font-medium"
           >
             ‹
           </button>
-          <div className="text-center min-w-[120px]">
+          <div className="text-center min-w-[130px]">
             <p className="font-semibold text-brand-forest">{formatDateLabel(viewDate)}</p>
             {!isToday && (
               <button
                 onClick={() => setViewDate(todayStr())}
-                className="text-xs text-brand-olive hover:underline mt-0.5"
+                className="text-sm text-brand-olive hover:underline mt-0.5 py-1 inline-block"
               >
                 Back to today
               </button>
@@ -161,7 +161,7 @@ export default function DashboardPage() {
           <button
             onClick={() => setViewDate((d) => offsetDate(d, 1))}
             disabled={isToday}
-            className="w-8 h-8 rounded-full bg-white border border-brand-warm text-brand-forest hover:bg-brand-sage/20 flex items-center justify-center transition-colors text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-11 h-11 rounded-full bg-white border border-brand-warm text-brand-forest hover:bg-brand-sage/20 flex items-center justify-center transition-colors text-xl font-medium disabled:opacity-30 disabled:cursor-not-allowed"
           >
             ›
           </button>
