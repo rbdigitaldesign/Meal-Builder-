@@ -3,6 +3,7 @@
 import type { Food, MealCategory, DietaryRestriction, MealItem } from "@/lib/types";
 import { MEAL_CATEGORY_LABELS, MEAL_CATEGORY_HINTS } from "@/lib/types";
 import { FOODS_BY_CATEGORY, DATA_SOURCES } from "@/data/foods";
+import { scaleNutrients } from "@/lib/nutrition";
 import { NutrientBadge } from "@/components/ui/Badge";
 
 const CATEGORY_ORDER: MealCategory[] = ["protein", "fat", "fibre", "carbs"];
@@ -21,34 +22,42 @@ const CATEGORY_HEADER: Record<MealCategory, string> = {
   carbs:   "bg-orange-500",
 };
 
+const PORTION_STEP = 10;
+const PORTION_MIN = 10;
+const PORTION_MAX = 500;
+
 interface Props {
   restrictions: DietaryRestriction[];
   currentItems: MealItem[];
   onAdd: (food: Food) => void;
   onRemove: (foodId: string) => void;
+  onPortionChange: (foodId: string, grams: number) => void;
 }
 
-export function MealScaffold({ restrictions, currentItems, onAdd, onRemove }: Props) {
-  const selectedIds = new Set(currentItems.map((i) => i.food.id));
-
+export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPortionChange }: Props) {
   function getFiltered(cat: MealCategory): Food[] {
     return FOODS_BY_CATEGORY[cat].filter((f) =>
       restrictions.every((r) => f.tags.includes(r))
     );
   }
 
-  function getSelected(cat: MealCategory): Food | undefined {
-    return currentItems.find((i) => i.food.mealCategory === cat)?.food;
+  function getSelectedItem(cat: MealCategory): MealItem | undefined {
+    return currentItems.find((i) => i.food.mealCategory === cat);
   }
 
   function handleToggle(food: Food) {
-    const existing = getSelected(food.mealCategory);
-    if (existing?.id === food.id) {
+    const existing = getSelectedItem(food.mealCategory);
+    if (existing?.food.id === food.id) {
       onRemove(food.id);
     } else {
-      if (existing) onRemove(existing.id);
+      if (existing) onRemove(existing.food.id);
       onAdd(food);
     }
+  }
+
+  function changePortion(foodId: string, current: number, delta: number) {
+    const next = Math.min(PORTION_MAX, Math.max(PORTION_MIN, current + delta));
+    onPortionChange(foodId, next);
   }
 
   return (
@@ -60,7 +69,7 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove }: Pr
 
       {CATEGORY_ORDER.map((cat) => {
         const foods = getFiltered(cat);
-        const selected = getSelected(cat);
+        const selectedItem = getSelectedItem(cat);
 
         return (
           <div key={cat} className={`rounded-2xl border overflow-hidden ${CATEGORY_COLORS[cat]}`}>
@@ -73,36 +82,73 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove }: Pr
             {/* Food options */}
             <div className="p-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
               {foods.map((food) => {
-                const isSelected = selected?.id === food.id;
-                return (
-                  <button
-                    key={food.id}
-                    onClick={() => handleToggle(food)}
-                    className={`flex items-start gap-3 p-3 rounded-xl border-2 text-left transition-all ${
-                      isSelected
-                        ? "border-brand-olive bg-white shadow-sm"
-                        : "border-transparent bg-white/60 hover:bg-white hover:border-brand-warm"
-                    }`}
-                  >
-                    {/* Checkbox circle */}
-                    <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
-                      isSelected ? "border-brand-olive bg-brand-olive" : "border-stone-300"
-                    }`}>
-                      {isSelected && <span className="text-white text-xs leading-none">✓</span>}
-                    </div>
+                const isSelected = selectedItem?.food.id === food.id;
+                const portion = selectedItem?.portionGrams ?? 100;
+                const scaled = isSelected ? scaleNutrients(food, portion) : null;
 
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-brand-black leading-snug">{food.name}</p>
-                      {food.servingSuggestion && (
-                        <p className="text-xs text-stone-400 mt-0.5">{food.servingSuggestion}</p>
-                      )}
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {food.highlightedNutrients.slice(0, 2).map((n) => (
-                          <NutrientBadge key={n} nutrient={n} />
-                        ))}
+                return (
+                  <div key={food.id} className={`rounded-xl border-2 transition-all ${
+                    isSelected
+                      ? "border-brand-olive bg-white shadow-sm"
+                      : "border-transparent bg-white/60"
+                  }`}>
+                    <button
+                      onClick={() => handleToggle(food)}
+                      className="flex items-start gap-3 p-3 text-left w-full hover:bg-white/80 rounded-xl transition-colors"
+                    >
+                      {/* Checkbox circle */}
+                      <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                        isSelected ? "border-brand-olive bg-brand-olive" : "border-stone-300"
+                      }`}>
+                        {isSelected && <span className="text-white text-xs leading-none">✓</span>}
                       </div>
-                    </div>
-                  </button>
+
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-brand-black leading-snug">{food.name}</p>
+                        {food.servingSuggestion && (
+                          <p className="text-xs text-stone-400 mt-0.5">{food.servingSuggestion}</p>
+                        )}
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {food.highlightedNutrients.slice(0, 2).map((n) => (
+                            <NutrientBadge key={n} nutrient={n} />
+                          ))}
+                        </div>
+                      </div>
+                    </button>
+
+                    {/* Inline portion control — shown only when selected */}
+                    {isSelected && scaled && (
+                      <div className="px-3 pb-3 pt-0 border-t border-brand-warm/50 mt-1">
+                        <div className="flex items-center justify-between gap-2 mt-2">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => changePortion(food.id, portion, -PORTION_STEP)}
+                              disabled={portion <= PORTION_MIN}
+                              aria-label="Decrease portion"
+                              className="w-7 h-7 flex items-center justify-center rounded-full border border-brand-warm bg-white text-brand-forest font-bold hover:border-brand-olive disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-base leading-none"
+                            >
+                              −
+                            </button>
+                            <span className="text-sm font-semibold text-brand-forest tabular-nums w-12 text-center">
+                              {portion}g
+                            </span>
+                            <button
+                              onClick={() => changePortion(food.id, portion, +PORTION_STEP)}
+                              disabled={portion >= PORTION_MAX}
+                              aria-label="Increase portion"
+                              className="w-7 h-7 flex items-center justify-center rounded-full border border-brand-warm bg-white text-brand-forest font-bold hover:border-brand-olive disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-base leading-none"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <span className="text-xs text-stone-400 tabular-nums">
+                            {scaled.calories} kcal · {scaled.protein}g protein
+                            {scaled.iron > 0 ? ` · ${scaled.iron}mg iron` : ""}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>

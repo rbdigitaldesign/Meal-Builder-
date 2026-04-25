@@ -8,7 +8,6 @@ import { MEAL_TYPE_LABELS } from "@/lib/types";
 import { useProfileStore } from "@/store/profileStore";
 import { useMealStore } from "@/store/mealStore";
 import { MealScaffold } from "@/components/meal/MealScaffold";
-import { MealItemRow } from "@/components/meal/MealItemRow";
 import { MealSummaryPanel } from "@/components/meal/MealSummaryPanel";
 import { Button } from "@/components/ui/Button";
 
@@ -67,26 +66,8 @@ export default function MealBuilderClient({ params }: PageProps) {
           currentItems={items}
           onAdd={handleAdd}
           onRemove={handleRemove}
+          onPortionChange={(foodId, grams) => updateItemPortion(mealType, foodId, grams)}
         />
-
-        {/* Portion adjusters for selected foods */}
-        {items.length > 0 && (
-          <section>
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">
-              Adjust portions
-            </h2>
-            <div className="space-y-2">
-              {items.map((item) => (
-                <MealItemRow
-                  key={item.food.id}
-                  item={item}
-                  onPortionChange={(g) => updateItemPortion(mealType, item.food.id, g)}
-                  onRemove={() => removeItemFromMeal(mealType, item.food.id)}
-                />
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* Collapsible nutritional summary */}
         <MealSummaryPanel items={items} targets={profile.targets} />
