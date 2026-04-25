@@ -5,9 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { ClientRow } from "@/lib/supabase/types";
+import { getEngagementStatus } from "@/lib/analytics";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+
+const ENGAGEMENT_STYLES = {
+  active:   { dot: "bg-green-400",  label: "Active",    text: "text-green-600"  },
+  quiet:    { dot: "bg-amber-400",  label: "Quiet",     text: "text-amber-600"  },
+  inactive: { dot: "bg-red-400",    label: "Inactive",  text: "text-red-500"    },
+  never:    { dot: "bg-stone-300",  label: "Never logged", text: "text-stone-400" },
+} as const;
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -30,9 +38,19 @@ export default function AdminDashboardPage() {
     load();
   }, [router]);
 
+  const [conditionFilter, setConditionFilter] = useState<string | null>(null);
+
   const active = clients.filter((c) => !c.archived_at);
   const archived = clients.filter((c) => c.archived_at);
-  const shown = showArchived ? archived : active;
+  const baseList = showArchived ? archived : active;
+
+  const allConditionTags = Array.from(
+    new Set(active.flatMap((c) => c.condition_tags))
+  ).sort();
+
+  const shown = conditionFilter
+    ? baseList.filter((c) => c.condition_tags.includes(conditionFilter))
+    : baseList;
 
   async function handleArchive(id: string) {
     if (!confirm("Archive this client? They won't be able to log in.")) return;
@@ -58,20 +76,48 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Toggle archived */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4 flex-wrap">
         <button
-          onClick={() => setShowArchived(false)}
+          onClick={() => { setShowArchived(false); setConditionFilter(null); }}
           className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${!showArchived ? "bg-brand-olive text-white" : "bg-stone-100 text-stone-500"}`}
         >
           Active ({active.length})
         </button>
         <button
-          onClick={() => setShowArchived(true)}
+          onClick={() => { setShowArchived(true); setConditionFilter(null); }}
           className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${showArchived ? "bg-brand-olive text-white" : "bg-stone-100 text-stone-500"}`}
         >
           Archived ({archived.length})
         </button>
       </div>
+
+      {/* Condition tag filters */}
+      {!showArchived && allConditionTags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          <span className="text-xs text-stone-400 self-center">Filter by condition:</span>
+          {allConditionTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => setConditionFilter(conditionFilter === tag ? null : tag)}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors border ${
+                conditionFilter === tag
+                  ? "bg-brand-olive text-white border-brand-olive"
+                  : "bg-white text-stone-600 border-stone-200 hover:border-brand-olive"
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+          {conditionFilter && (
+            <button
+              onClick={() => setConditionFilter(null)}
+              className="text-xs text-stone-400 hover:text-brand-olive transition-colors px-1"
+            >
+              ✕ Clear
+            </button>
+          )}
+        </div>
+      )}
 
       {loading ? (
         <p className="text-stone-400 text-sm">Loading…</p>
@@ -86,13 +132,23 @@ export default function AdminDashboardPage() {
           {shown.map((client) => (
             <Card key={client.id} padded={false} className="flex items-center gap-4 px-5 py-4">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <p className="font-semibold text-brand-black">{client.name}</p>
                   {client.condition_tags.map((tag) => (
                     <span key={tag} className="text-xs bg-brand-sage/30 text-brand-forest px-2 py-0.5 rounded-full">{tag}</span>
                   ))}
                 </div>
-                <div className="flex items-center gap-3 mt-0.5 text-xs text-stone-400">
+                <div className="flex items-center gap-3 mt-1 text-xs text-stone-400 flex-wrap">
+                  {(() => {
+                    const status = getEngagementStatus(client.last_active);
+                    const { dot, label, text } = ENGAGEMENT_STYLES[status];
+                    return (
+                      <span className={`flex items-center gap-1 font-medium ${text}`}>
+                        <span className={`w-2 h-2 rounded-full inline-block ${dot}`} />
+                        {label}
+                      </span>
+                    );
+                  })()}
                   <span>PIN: <span className="font-mono font-semibold text-stone-600">{client.pin ?? "—"}</span></span>
                   {client.last_active && (
                     <span>Last active: {new Date(client.last_active).toLocaleDateString("en-AU")}</span>

@@ -10,6 +10,7 @@ import { getDefaultTargets } from "@/data/defaultTargets";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ClinicalNotes } from "@/components/admin/ClinicalNotes";
 import { NutrientTrends } from "@/components/admin/NutrientTrends";
+import { WeeklySummary } from "@/components/admin/WeeklySummary";
 import { PINManager } from "@/components/admin/PINManager";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -24,7 +25,7 @@ export default function ClientDetailPage({ params }: PageProps) {
   const [logs, setLogs] = useState<MealLogRow[]>([]);
   const [notes, setNotes] = useState<ClinicalNoteRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"overview" | "trends" | "notes">("overview");
+  const [tab, setTab] = useState<"overview" | "summary" | "trends" | "notes">("overview");
 
   useEffect(() => {
     async function load() {
@@ -34,7 +35,7 @@ export default function ClientDetailPage({ params }: PageProps) {
 
       const [{ data: clientData }, { data: logsData }, { data: notesData }] = await Promise.all([
         supabase.from("clients").select("*").eq("id", id).single(),
-        supabase.from("meal_logs").select("*").eq("client_id", id).order("date", { ascending: false }).limit(100),
+        supabase.from("meal_logs").select("*").eq("client_id", id).order("date", { ascending: false }).limit(150),
         supabase.from("clinical_notes").select("*").eq("client_id", id).order("created_at", { ascending: false }),
       ]);
 
@@ -57,6 +58,7 @@ export default function ClientDetailPage({ params }: PageProps) {
 
   const TABS = [
     { key: "overview", label: "Overview" },
+    { key: "summary",  label: "Summary" },
     { key: "trends",   label: "Trends" },
     { key: "notes",    label: `Notes (${notes.length})` },
   ] as const;
@@ -80,7 +82,12 @@ export default function ClientDetailPage({ params }: PageProps) {
               ))}
             </div>
           </div>
-          <Button variant="secondary" size="sm" onClick={() => router.push(`/admin/clients/${id}/edit`)}>Edit Profile</Button>
+          <div className="flex gap-2">
+            <Link href={`/admin/clients/${id}/report`}>
+              <Button variant="secondary" size="sm">Print Report</Button>
+            </Link>
+            <Button variant="secondary" size="sm" onClick={() => router.push(`/admin/clients/${id}/edit`)}>Edit Profile</Button>
+          </div>
         </div>
       </div>
 
@@ -133,6 +140,7 @@ export default function ClientDetailPage({ params }: PageProps) {
         </div>
       )}
 
+      {tab === "summary" && <WeeklySummary logs={logs} targets={client.targets} />}
       {tab === "trends" && <NutrientTrends logs={logs} targets={client.targets} />}
       {tab === "notes" && <ClinicalNotes clientId={id} initial={notes} />}
     </AdminShell>
