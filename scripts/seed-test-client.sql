@@ -19,14 +19,14 @@ BEGIN
   END IF;
 
   -- Remove existing test client if re-running
-  DELETE FROM clients WHERE name = 'Emma Clarke' AND pin = '1234';
+  DELETE FROM clients WHERE name = 'Emma Clarke' AND pin = '9876';
 
   -- Create test client
   INSERT INTO clients (practitioner_id, name, pin, restrictions, targets, condition_tags)
   VALUES (
     v_practitioner_id,
     'Emma Clarke',
-    '1234',
+    '9876',
     ARRAY['vegetarian']::text[],
     '[
       {"nutrient":"iron","dailyTarget":18,"unit":"mg","priority":"critical"},
@@ -155,5 +155,5 @@ BEGIN
 
   END LOOP;
 
-  RAISE NOTICE 'Done! Test patient Emma Clarke (PIN: 1234) has 14 days of meal history.';
+  RAISE NOTICE 'Done! Test patient Emma Clarke (PIN: 9876) has 14 days of meal history.';
 END $$;
