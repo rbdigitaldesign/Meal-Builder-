@@ -6,16 +6,20 @@ import type { PatientProfile, DietaryRestriction, NutritionalTarget } from "@/li
 
 interface ProfileStore {
   profile: PatientProfile | null;
+  _hasHydrated: boolean;
   setProfile: (profile: PatientProfile) => void;
   updateTargets: (targets: NutritionalTarget[]) => void;
   updateRestrictions: (restrictions: DietaryRestriction[]) => void;
   resetProfile: () => void;
+  setHasHydrated: (v: boolean) => void;
 }
 
 export const useProfileStore = create<ProfileStore>()(
   persist(
     (set) => ({
       profile: null,
+      _hasHydrated: false,
+      setHasHydrated: (v) => set({ _hasHydrated: v }),
       setProfile: (profile) => set({ profile }),
       updateTargets: (targets) =>
         set((state) =>
@@ -27,6 +31,11 @@ export const useProfileStore = create<ProfileStore>()(
         ),
       resetProfile: () => set({ profile: null }),
     }),
-    { name: "meal-builder-profile" }
+    {
+      name: "meal-builder-profile",
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
+    }
   )
 );

@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/Button";
 export default function DashboardPage() {
   const router = useRouter();
   const { profile, resetProfile } = useProfileStore();
+  const _hasHydrated = useProfileStore((s) => s._hasHydrated);
   const { dailyLog, resetDay, ensureTodayLog } = useMealStore();
   const [isSupabasePatient, setIsSupabasePatient] = useState(false);
   const isSigningOutRef = useRef(false);
@@ -25,10 +26,12 @@ export default function DashboardPage() {
   }, [ensureTodayLog]);
 
   useEffect(() => {
+    if (!_hasHydrated) return;
     if (!profile?.setupComplete && !isSigningOutRef.current) {
-      router.replace("/clinician");
+      const clientId = localStorage.getItem("meal-builder-client-id");
+      router.replace(clientId ? "/patient/login" : "/clinician");
     }
-  }, [profile?.setupComplete, router]);
+  }, [_hasHydrated, profile?.setupComplete, router]);
 
   function handleSignOut() {
     isSigningOutRef.current = true;
