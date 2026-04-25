@@ -40,6 +40,7 @@ export default function PatientLoginPage() {
       pin: client.pin ?? undefined,
       restrictions: client.restrictions,
       targets: client.targets,
+      conditionTags: client.condition_tags ?? [],
       setupComplete: true,
     });
 
