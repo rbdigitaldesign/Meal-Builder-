@@ -5,6 +5,7 @@ export const RECIPES: Recipe[] = [
   // ── BREAKFAST ────────────────────────────────────────────────────────────
   {
     id: "veggie-frittata",
+    imageUrl: "https://images.unsplash.com/photo-htMa9KPui1I?w=800&h=400&fit=crop&auto=format",
     name: "Veggie Frittata",
     description: "Baked egg frittata with spinach and roasted peppers.",
     mealTypes: ["breakfast", "lunch"],
@@ -28,6 +29,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "overnight-oats",
+    imageUrl: "https://images.unsplash.com/photo-QXcgsXyGvOM?w=800&h=400&fit=crop&auto=format",
     name: "Overnight Oats with Berries",
     description: "Creamy rolled oats with chia seeds, yoghurt and fresh berries.",
     mealTypes: ["breakfast"],
@@ -49,6 +51,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "smashed-avo-toast",
+    imageUrl: "https://images.unsplash.com/photo-ui-pynyV3Nc?w=800&h=400&fit=crop&auto=format",
     name: "Smashed Avo Toast + Eggs",
     description: "Sourdough toast topped with avocado and poached eggs on a bed of spinach.",
     mealTypes: ["breakfast", "lunch"],
@@ -70,6 +73,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "smoothie-bowl",
+    imageUrl: "https://images.unsplash.com/photo-BTs7uDqVeqI?w=800&h=400&fit=crop&auto=format",
     name: "Iron-Boost Smoothie Bowl",
     description: "Fortified oatmeal base blended with mixed berries, topped with chia and strawberries.",
     mealTypes: ["breakfast", "snack"],
@@ -92,6 +96,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "greek-yogurt-bowl",
+    imageUrl: "https://images.unsplash.com/photo-9Uphjae3YnU?w=800&h=400&fit=crop&auto=format",
     name: "Greek Yoghurt Bowl",
     description: "Thick Greek yoghurt with mixed berries, almonds and ground flaxseeds.",
     mealTypes: ["breakfast", "snack"],
@@ -115,6 +120,7 @@ export const RECIPES: Recipe[] = [
   // ── LUNCH ────────────────────────────────────────────────────────────────
   {
     id: "lentil-soup",
+    imageUrl: "https://images.unsplash.com/photo-fxJTl_gDh28?w=800&h=400&fit=crop&auto=format",
     name: "Lentil Soup",
     description: "Hearty red lentil soup with wilted spinach and tomato, served with sourdough.",
     mealTypes: ["lunch", "dinner"],
@@ -139,6 +145,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "chickpea-buddha-bowl",
+    imageUrl: "https://images.unsplash.com/photo-NDX6Hr95dtQ?w=800&h=400&fit=crop&auto=format",
     name: "Chickpea Buddha Bowl",
     description: "Quinoa and chickpeas with raw kale, tahini dressing and red bell pepper.",
     mealTypes: ["lunch"],
@@ -163,6 +170,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "tuna-salad-wrap",
+    imageUrl: "https://images.unsplash.com/photo-tAVK67cQRAI?w=800&h=400&fit=crop&auto=format",
     name: "Tuna Salad Wrap",
     description: "Canned tuna with avocado, leafy greens and tomato on wholegrain bread.",
     mealTypes: ["lunch"],
@@ -185,6 +193,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "salmon-brown-rice",
+    imageUrl: "https://images.unsplash.com/photo-w0JzqJZYX_E?w=800&h=400&fit=crop&auto=format",
     name: "Salmon + Brown Rice Bowl",
     description: "Pan-seared salmon over brown rice with steamed broccoli and olive oil.",
     mealTypes: ["lunch", "dinner"],
@@ -207,6 +216,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "tofu-stir-fry",
+    imageUrl: "https://images.unsplash.com/photo-ee8N1SNfBc0?w=800&h=400&fit=crop&auto=format",
     name: "Tofu Stir-fry",
     description: "Firm tofu with broccoli and red capsicum over brown rice.",
     mealTypes: ["lunch", "dinner"],
@@ -229,6 +239,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "sardine-rice-cakes",
+    imageUrl: "https://images.unsplash.com/photo-XZUqPMLHvzw?w=800&h=400&fit=crop&auto=format",
     name: "Sardines on Rice Cakes",
     description: "Omega-3-rich sardines on brown rice cakes with tomato and leafy greens.",
     mealTypes: ["lunch", "snack"],
@@ -251,6 +262,7 @@ export const RECIPES: Recipe[] = [
   // ── DINNER ───────────────────────────────────────────────────────────────
   {
     id: "beef-sweet-potato",
+    imageUrl: "https://images.unsplash.com/photo-sk1LtBmGMZQ?w=800&h=400&fit=crop&auto=format",
     name: "Beef + Sweet Potato",
     description: "Lean sirloin with roasted sweet potato and broccoli.",
     mealTypes: ["dinner"],
@@ -274,6 +286,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "tempeh-stir-fry",
+    imageUrl: "https://images.unsplash.com/photo-iFQAH2WUlbE?w=800&h=400&fit=crop&auto=format",
     name: "Tempeh Stir-fry",
     description: "Marinated tempeh with capsicum, broccoli and brown rice.",
     mealTypes: ["dinner"],
@@ -296,6 +309,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "lentil-dahl",
+    imageUrl: "https://images.unsplash.com/photo-jLA_p-K3QBM?w=800&h=400&fit=crop&auto=format",
     name: "Lentil Dahl",
     description: "Spiced red lentil dahl with spinach over brown rice, finished with coconut yoghurt.",
     mealTypes: ["dinner"],
@@ -320,6 +334,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "chicken-veg",
+    imageUrl: "https://images.unsplash.com/photo-wDtErSkmevs?w=800&h=400&fit=crop&auto=format",
     name: "Chicken + Roasted Veg",
     description: "Roasted chicken breast with sweet potato and broccoli.",
     mealTypes: ["dinner"],
@@ -341,6 +356,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "soybeans-greens",
+    imageUrl: "https://images.unsplash.com/photo-n4PdRvfUESA?w=800&h=400&fit=crop&auto=format",
     name: "Soybeans + Greens Bowl",
     description: "Boiled soybeans over brown rice with Swiss chard and tahini dressing.",
     mealTypes: ["lunch", "dinner"],
@@ -365,6 +381,7 @@ export const RECIPES: Recipe[] = [
   // ── SNACK ────────────────────────────────────────────────────────────────
   {
     id: "hummus-veg",
+    imageUrl: "https://images.unsplash.com/photo-yr-sW_x9aHk?w=800&h=400&fit=crop&auto=format",
     name: "Hummus + Veggie Sticks",
     description: "Chickpea and tahini hummus with carrot sticks and red capsicum.",
     mealTypes: ["snack"],
@@ -385,6 +402,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "nut-seed-mix",
+    imageUrl: "https://images.unsplash.com/photo-sa49T_fgGVE?w=800&h=400&fit=crop&auto=format",
     name: "Nut & Seed Trail Mix",
     description: "Almonds, pumpkin seeds, sunflower seeds and dried apricots.",
     mealTypes: ["snack"],
@@ -405,6 +423,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "yogurt-berry-bowl",
+    imageUrl: "https://images.unsplash.com/photo-LNDgBERq8Q0?w=800&h=400&fit=crop&auto=format",
     name: "Yoghurt Berry Bowl",
     description: "Greek yoghurt with mixed berries and chia seeds.",
     mealTypes: ["snack"],
@@ -424,6 +443,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "edamame-bowl",
+    imageUrl: "https://images.unsplash.com/photo-IGfIGP5ONV0?w=800&h=400&fit=crop&auto=format",
     name: "Edamame Bowl",
     description: "Steamed edamame with carrot and cucumber sticks.",
     mealTypes: ["snack"],
@@ -445,6 +465,7 @@ export const RECIPES: Recipe[] = [
   // ── ADDITIONAL BREAKFAST ─────────────────────────────────────────────────
   {
     id: "chia-pudding",
+    imageUrl: "https://images.unsplash.com/photo-Wt2Gbc37Zqk?w=800&h=400&fit=crop&auto=format",
     name: "Chia Pudding",
     description: "Thick chia pudding with coconut yoghurt and mixed berries.",
     mealTypes: ["breakfast", "snack"],
@@ -467,6 +488,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "egg-chard-scramble",
+    imageUrl: "https://images.unsplash.com/photo-etSkWhnw5aA?w=800&h=400&fit=crop&auto=format",
     name: "Egg + Swiss Chard Scramble",
     description: "Scrambled eggs with wilted Swiss chard on wholegrain toast.",
     mealTypes: ["breakfast", "lunch"],
@@ -488,6 +510,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "sardine-toast",
+    imageUrl: "https://images.unsplash.com/photo-9ybpfHSl4D8?w=800&h=400&fit=crop&auto=format",
     name: "Sardine Toast",
     description: "Canned sardines on sourdough with rocket and tomato — a B12 powerhouse.",
     mealTypes: ["breakfast", "lunch"],
@@ -509,6 +532,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "nutty-power-oats",
+    imageUrl: "https://images.unsplash.com/photo-6DtTI1VnQNg?w=800&h=400&fit=crop&auto=format",
     name: "Nutty Power Oats",
     description: "Rolled oats topped with pumpkin seeds, almonds and mixed berries.",
     mealTypes: ["breakfast"],
@@ -532,6 +556,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "tempeh-hash",
+    imageUrl: "https://images.unsplash.com/photo-rzPVSqQjjqs?w=800&h=400&fit=crop&auto=format",
     name: "Tempeh Breakfast Hash",
     description: "Crumbled tempeh pan-fried with spinach and capsicum on sourdough.",
     mealTypes: ["breakfast", "lunch"],
@@ -555,6 +580,7 @@ export const RECIPES: Recipe[] = [
   // ── ADDITIONAL LUNCH ─────────────────────────────────────────────────────
   {
     id: "beef-rocket-salad",
+    imageUrl: "https://images.unsplash.com/photo-VqTwBiaiSsk?w=800&h=400&fit=crop&auto=format",
     name: "Beef + Rocket Salad",
     description: "Sliced sirloin over rocket, tomato and sourdough with olive oil.",
     mealTypes: ["lunch", "dinner"],
@@ -578,6 +604,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "edamame-quinoa-bowl",
+    imageUrl: "https://images.unsplash.com/photo-5lIoNp2wUB0?w=800&h=400&fit=crop&auto=format",
     name: "Edamame Quinoa Bowl",
     description: "Edamame and quinoa with raw kale, tahini and red capsicum.",
     mealTypes: ["lunch"],
@@ -601,6 +628,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "tempeh-quinoa-salad",
+    imageUrl: "https://images.unsplash.com/photo-CW_Y16Kws20?w=800&h=400&fit=crop&auto=format",
     name: "Tempeh Quinoa Salad",
     description: "Marinated tempeh with quinoa, kale and pumpkin seeds.",
     mealTypes: ["lunch"],
@@ -623,6 +651,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "cottage-cheese-bowl",
+    imageUrl: "https://images.unsplash.com/photo-FtQ9v-vfklQ?w=800&h=400&fit=crop&auto=format",
     name: "Cottage Cheese + Veg Bowl",
     description: "Cottage cheese with leafy greens, cucumber and capsicum on rice cakes.",
     mealTypes: ["lunch", "snack"],
@@ -646,6 +675,7 @@ export const RECIPES: Recipe[] = [
   // ── ADDITIONAL DINNER ────────────────────────────────────────────────────
   {
     id: "prawn-quinoa-stir-fry",
+    imageUrl: "https://images.unsplash.com/photo-o6Oq7rBMqVc?w=800&h=400&fit=crop&auto=format",
     name: "Prawn Quinoa Stir-fry",
     description: "Sautéed prawns with quinoa, broccoli and capsicum.",
     mealTypes: ["dinner"],
@@ -668,6 +698,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "chickpea-sweet-potato-curry",
+    imageUrl: "https://images.unsplash.com/photo-LKKl3WFcwzQ?w=800&h=400&fit=crop&auto=format",
     name: "Chickpea Sweet Potato Curry",
     description: "Spiced chickpeas and sweet potato with spinach and coconut yoghurt over rice.",
     mealTypes: ["dinner"],
@@ -691,6 +722,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "chicken-liver-rice",
+    imageUrl: "https://images.unsplash.com/photo-ncXvQnrmStA?w=800&h=400&fit=crop&auto=format",
     name: "Chicken Liver + Rice",
     description: "Pan-fried chicken liver with brown rice and wilted spinach.",
     mealTypes: ["dinner"],
@@ -712,6 +744,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "sardine-pasta",
+    imageUrl: "https://images.unsplash.com/photo-qGOADX9b3Hg?w=800&h=400&fit=crop&auto=format",
     name: "Sardine Pasta",
     description: "Sardines tossed through legume pasta with spinach and tomato.",
     mealTypes: ["dinner"],
@@ -734,6 +767,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "beef-lentil-bowl",
+    imageUrl: "https://images.unsplash.com/photo-a-gPTenlS0U?w=800&h=400&fit=crop&auto=format",
     name: "Beef + Lentil Bowl",
     description: "Lean beef with lentils, Swiss chard and quinoa.",
     mealTypes: ["dinner"],
@@ -756,6 +790,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "vegan-amaranth-bowl",
+    imageUrl: "https://images.unsplash.com/photo-bBCRrplhhZ4?w=800&h=400&fit=crop&auto=format",
     name: "Vegan Amaranth Bowl",
     description: "Soybeans and amaranth with kale and tahini — complete plant-based nutrition.",
     mealTypes: ["dinner", "lunch"],

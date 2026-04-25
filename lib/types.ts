@@ -156,4 +156,5 @@ export interface Recipe {
   prepTime?: string;
   note?: string;
   instructions?: string[];
+  imageUrl?: string;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { MealType, DietaryRestriction, MealItem, NutritionalTarget, DailyLog, Recipe } from "@/lib/types";
 import { NUTRIENT_LABELS } from "@/lib/types";
 import { RECIPES, resolveRecipeItems } from "@/data/recipes";
@@ -129,6 +130,19 @@ export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, t
               key={recipe.id}
               className="bg-white rounded-2xl border border-brand-warm overflow-hidden"
             >
+              {/* Hero image */}
+              {recipe.imageUrl && (
+                <div className="relative w-full h-48">
+                  <Image
+                    src={recipe.imageUrl}
+                    alt={recipe.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+              )}
+
               {/* Card header */}
               <div className="px-4 pt-4 pb-3">
                 <div className="flex items-start justify-between gap-2">
