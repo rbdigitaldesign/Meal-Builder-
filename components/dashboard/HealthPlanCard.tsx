@@ -14,9 +14,10 @@ const RESTRICTION_LABELS: Record<string, string> = {
 
 interface Props {
   profile: PatientProfile;
+  className?: string;
 }
 
-export function HealthPlanCard({ profile }: Props) {
+export function HealthPlanCard({ profile, className }: Props) {
   const criticals = profile.targets.filter((t) => t.priority === "critical");
   const recommended = profile.targets.filter((t) => t.priority === "recommended");
 
@@ -24,7 +25,7 @@ export function HealthPlanCard({ profile }: Props) {
   const hasRestrictions = profile.restrictions.length > 0;
 
   return (
-    <Card className="bg-brand-forest/5 border-brand-warm space-y-4">
+    <Card className={`bg-brand-forest/5 border-brand-warm space-y-4 ${className ?? ""}`}>
       {/* Header */}
       <div>
         <p className="font-semibold text-brand-forest">My Health Plan</p>
