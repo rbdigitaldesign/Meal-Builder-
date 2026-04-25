@@ -91,6 +91,7 @@ export const PROTEIN_FOODS: Food[] = [
     tags: ["vegetarian", "glutenFree", "nutFree"],
     highlightedNutrients: ["protein", "vitaminB12", "iron"],
     servingSuggestion: "2 large eggs (100g)",
+    servingUnit: { singular: "egg", plural: "eggs", gramsPerUnit: 50, minUnits: 1, maxUnits: 6 },
   },
   {
     id: "cottage-cheese-lowfat",

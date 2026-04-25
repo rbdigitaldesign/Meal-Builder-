@@ -131,6 +131,8 @@ export default function MealBuilderClient({ params }: PageProps) {
             mealType={mealType}
             restrictions={profile.restrictions}
             currentItems={items}
+            dailyLog={dailyLog}
+            targets={profile.targets}
             onApply={handleApplyRecipe}
           />
         ) : (

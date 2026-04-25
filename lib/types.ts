@@ -48,6 +48,14 @@ export interface FoodNutrients {
   vitaminB12: number;
 }
 
+export interface ServingUnit {
+  singular: string;
+  plural: string;
+  gramsPerUnit: number;
+  minUnits?: number;
+  maxUnits?: number;
+}
+
 export interface Food {
   id: string;
   name: string;
@@ -57,6 +65,7 @@ export interface Food {
   tags: DietaryRestriction[];
   highlightedNutrients: NutrientKey[];
   servingSuggestion?: string;
+  servingUnit?: ServingUnit;
 }
 
 export interface MealItem {
