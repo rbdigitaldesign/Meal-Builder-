@@ -12,6 +12,22 @@ export type NutrientKey =
 
 export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
+export type MealCategory = "protein" | "fat" | "fibre" | "carbs";
+
+export const MEAL_CATEGORY_LABELS: Record<MealCategory, string> = {
+  protein: "Protein",
+  fat: "Healthy Fat",
+  fibre: "Fibre + Veggies",
+  carbs: "Complex Carbs",
+};
+
+export const MEAL_CATEGORY_HINTS: Record<MealCategory, string> = {
+  protein: "Choose 1",
+  fat: "Choose 1",
+  fibre: "Choose 1",
+  carbs: "Choose 1 — optional",
+};
+
 export type DietaryRestriction =
   | "vegetarian"
   | "vegan"
@@ -36,6 +52,7 @@ export interface Food {
   id: string;
   name: string;
   category: string;
+  mealCategory: MealCategory;
   nutrients: FoodNutrients;
   tags: DietaryRestriction[];
   highlightedNutrients: NutrientKey[];

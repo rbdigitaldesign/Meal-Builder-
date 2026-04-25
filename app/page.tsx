@@ -12,7 +12,9 @@ export default function RootPage() {
     if (profile?.setupComplete) {
       router.replace("/dashboard");
     } else {
-      router.replace("/clinician");
+      // Check if there's a client ID stored (returning patient)
+      const clientId = localStorage.getItem("meal-builder-client-id");
+      router.replace(clientId ? "/patient/login" : "/patient/login");
     }
   }, [profile, router]);
 

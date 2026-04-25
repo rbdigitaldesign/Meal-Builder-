@@ -9,9 +9,12 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.104.1",
     "next": "^15.3.1",
     "react": "^18",
     "react-dom": "^18",
+    "recharts": "^3.8.1",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
