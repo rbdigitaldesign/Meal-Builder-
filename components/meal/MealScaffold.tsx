@@ -5,6 +5,7 @@ import { MEAL_CATEGORY_LABELS, MEAL_CATEGORY_HINTS } from "@/lib/types";
 import { FOODS_BY_CATEGORY, DATA_SOURCES } from "@/data/foods";
 import { scaleNutrients } from "@/lib/nutrition";
 import { NutrientBadge } from "@/components/ui/Badge";
+import { useEnergyUnit } from "@/lib/useEnergyUnit";
 
 const CATEGORY_ORDER: MealCategory[] = ["protein", "fat", "fibre", "carbs"];
 
@@ -35,6 +36,8 @@ interface Props {
 }
 
 export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPortionChange }: Props) {
+  const { display: displayEnergy, toggle: toggleUnit, unit } = useEnergyUnit();
+
   function getFiltered(cat: MealCategory): Food[] {
     return FOODS_BY_CATEGORY[cat].filter((f) =>
       restrictions.every((r) => f.tags.includes(r))
@@ -141,10 +144,14 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
                               +
                             </button>
                           </div>
-                          <span className="text-xs text-stone-400 tabular-nums">
-                            {scaled.calories} kcal · {scaled.protein}g protein
+                          <button
+                            onClick={toggleUnit}
+                            className="text-xs text-stone-400 tabular-nums hover:text-brand-olive transition-colors"
+                            title={`Tap to switch to ${unit === "kcal" ? "kJ" : "kcal"}`}
+                          >
+                            {displayEnergy(scaled.calories)} · {scaled.protein}g protein
                             {scaled.iron > 0 ? ` · ${scaled.iron}mg iron` : ""}
-                          </span>
+                          </button>
                         </div>
                       </div>
                     )}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Meal, NutritionalTarget } from "@/lib/types";
 import { MEAL_TYPE_LABELS } from "@/lib/types";
 import { calculateMealTotals, buildNutrientSummaries } from "@/lib/nutrition";
+import { useEnergyUnit } from "@/lib/useEnergyUnit";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Card } from "@/components/ui/Card";
 
@@ -24,6 +25,7 @@ export function MealSummaryCard({ meal, mealType, targets }: Props) {
   const items = meal?.items ?? [];
   const totals = calculateMealTotals(items);
   const summaries = buildNutrientSummaries(totals, targets);
+  const { display: displayEnergy, toggle: toggleUnit } = useEnergyUnit();
   const criticals = summaries.filter((s) =>
     targets.find((t) => t.nutrient === s.nutrient)?.priority === "critical"
   );
@@ -39,7 +41,7 @@ export function MealSummaryCard({ meal, mealType, targets }: Props) {
               <p className="text-xs text-stone-400">
                 {items.length === 0
                   ? "No foods added yet"
-                  : `${items.length} food${items.length !== 1 ? "s" : ""} · ${Math.round(totals.calories)} kcal`}
+                  : <>{items.length} food{items.length !== 1 ? "s" : ""} · <button onClick={(e) => { e.preventDefault(); toggleUnit(); }} className="hover:text-brand-olive transition-colors">{displayEnergy(totals.calories)}</button></>}
               </p>
             </div>
           </div>
