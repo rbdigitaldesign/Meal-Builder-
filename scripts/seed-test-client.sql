@@ -27,7 +27,7 @@ BEGIN
     v_practitioner_id,
     'Emma Clarke',
     '1234',
-    '["vegetarian"]'::jsonb,
+    ARRAY['vegetarian']::text[],
     '[
       {"nutrient":"iron","dailyTarget":18,"unit":"mg","priority":"critical"},
       {"nutrient":"vitaminB12","dailyTarget":2.4,"unit":"mcg","priority":"critical"},
@@ -40,7 +40,7 @@ BEGIN
       {"nutrient":"zinc","dailyTarget":8,"unit":"mg","priority":"recommended"},
       {"nutrient":"vitaminC","dailyTarget":75,"unit":"mg","priority":"recommended"}
     ]'::jsonb,
-    '["Iron Deficiency Anaemia","Mental Health"]'::jsonb
+    ARRAY['Iron Deficiency Anaemia','Mental Health']::text[]
   )
   RETURNING id INTO v_client_id;
 
