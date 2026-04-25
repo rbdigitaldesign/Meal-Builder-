@@ -29,6 +29,6 @@ export const FOODS_BY_ID: Record<string, Food> = Object.fromEntries(
 export const DATA_SOURCES = [
   {
     label: "Australian Food Composition Database (FSANZ)",
-    url: "https://www.foodstandards.gov.au/science-and-research/monographs-and-technical-reports/australian-food-composition-database",
+    url: "https://www.foodstandards.gov.au/science-data/food-nutrient-databases/afcd",
   },
 ];
