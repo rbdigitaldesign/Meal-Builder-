@@ -114,27 +114,29 @@ export default function ReportPage({ params }: PageProps) {
         </button>
       </div>
 
+      {/* Branded header — full width, prints with background */}
+      <div className="bg-brand-forest [print-color-adjust:exact] [-webkit-print-color-adjust:exact] px-8 py-6 flex items-center justify-between">
+        <Image
+          src="/logo.png"
+          alt="Alchemy Natural Health"
+          width={160}
+          height={54}
+          className="object-contain"
+        />
+        <div className="text-right text-white/70 text-xs leading-relaxed">
+          <p className="text-white font-semibold text-sm">Alchemy Natural Health</p>
+          <p>alchemynaturalhealth.com.au</p>
+        </div>
+      </div>
+
       {/* Report body */}
       <div className="max-w-2xl mx-auto px-8 py-10 space-y-8">
 
-        {/* Header */}
-        <div className="flex items-start justify-between border-b border-stone-200 pb-6">
-          <div>
-            <Image
-              src="/logo.png"
-              alt="Alchemy Natural Health"
-              width={120}
-              height={40}
-              className="object-contain mb-3"
-            />
-            <h1 className="text-2xl font-bold text-brand-forest">{client.name}</h1>
-            <p className="text-sm text-stone-500 mt-0.5">Nutritional Progress Report</p>
-            <p className="text-xs text-stone-400 mt-0.5">Generated {generatedDate}</p>
-          </div>
-          <div className="text-right text-sm text-stone-500">
-            <p>Alchemy Natural Health</p>
-            <p className="text-xs text-stone-400 mt-1">alchemynaturalhealth.com.au</p>
-          </div>
+        {/* Patient + report title */}
+        <div className="border-b border-stone-200 pb-6">
+          <h1 className="text-2xl font-bold text-brand-forest">{client.name}</h1>
+          <p className="text-sm text-stone-500 mt-1">Nutritional Progress Report</p>
+          <p className="text-xs text-stone-400 mt-0.5">Generated {generatedDate}</p>
         </div>
 
         {/* Patient profile */}
