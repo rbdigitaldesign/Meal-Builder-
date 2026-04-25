@@ -7,7 +7,8 @@ import { scaleNutrients } from "@/lib/nutrition";
 import { NutrientBadge } from "@/components/ui/Badge";
 import { useEnergyUnit } from "@/lib/useEnergyUnit";
 
-const CATEGORY_ORDER: MealCategory[] = ["protein", "fat", "fibre", "carbs"];
+// Row 1: Protein | Healthy Fat   Row 2: Complex Carbs | Fibre + Veggies
+const CATEGORY_ORDER: MealCategory[] = ["protein", "fat", "carbs", "fibre"];
 
 const CATEGORY_COLORS: Record<MealCategory, string> = {
   protein: "bg-blue-50 border-blue-200",
@@ -96,7 +97,7 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
         <p className="text-sm text-stone-500 mt-0.5">Add foods from each group — mix and match freely.</p>
       </div>
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-3">
       {CATEGORY_ORDER.map((cat) => {
         const foods = getFiltered(cat);
 
@@ -108,8 +109,8 @@ export function MealScaffold({ restrictions, currentItems, onAdd, onRemove, onPo
               <span className="text-white/70 text-xs">{MEAL_CATEGORY_HINTS[cat]}</span>
             </div>
 
-            {/* Food options */}
-            <div className="p-3 grid grid-cols-2 gap-2">
+            {/* Food options — single column within half-width panels */}
+            <div className="p-2 flex flex-col gap-1.5">
               {foods.map((food) => {
                 const thisItem = currentItems.find((i) => i.food.id === food.id);
                 const isSelected = !!thisItem;
