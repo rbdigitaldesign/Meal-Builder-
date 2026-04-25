@@ -23,7 +23,7 @@ export default function MealBuilderClient({ params }: PageProps) {
   const router = useRouter();
 
   const { profile, _hasHydrated } = useProfileStore();
-  const { dailyLog, addItemToMeal, removeItemFromMeal, updateItemPortion, clearMeal } = useMealStore();
+  const { dailyLog, addItemToMeal, removeItemFromMeal, updateItemPortion, clearMeal, setMealRecipe } = useMealStore();
 
   const [activeMode, setActiveMode] = useState<"recipes" | "build">("recipes");
   const [syncStatus, setSyncStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -74,8 +74,9 @@ export default function MealBuilderClient({ params }: PageProps) {
     removeItemFromMeal(mealType, foodId);
   }
 
-  function handleApplyRecipe(recipeItems: MealItem[]) {
+  function handleApplyRecipe(recipeItems: MealItem[], recipeId: string) {
     clearMeal(mealType);
+    setMealRecipe(mealType, recipeId);
     for (const item of recipeItems) {
       addItemToMeal(mealType, item);
     }

@@ -57,7 +57,7 @@ interface Props {
   currentItems: MealItem[];
   dailyLog: DailyLog;
   targets: NutritionalTarget[];
-  onApply: (items: MealItem[]) => void;
+  onApply: (items: MealItem[], recipeId: string) => void;
 }
 
 export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, targets, onApply }: Props) {
@@ -98,7 +98,7 @@ export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, t
       )) return;
     }
 
-    onApply(resolveRecipeItems(recipe));
+    onApply(resolveRecipeItems(recipe), recipe.id);
   }
 
   if (filtered.length === 0) {

@@ -20,10 +20,12 @@ const MAX_HISTORY_DAYS = 30;
 interface MealStore {
   dailyLog: DailyLog;
   logHistory: Record<string, DailyLog>;
+  activeRecipes: Partial<Record<MealType, string>>;
   addItemToMeal: (mealType: MealType, item: MealItem) => void;
   removeItemFromMeal: (mealType: MealType, foodId: string) => void;
   updateItemPortion: (mealType: MealType, foodId: string, grams: number) => void;
   clearMeal: (mealType: MealType) => void;
+  setMealRecipe: (mealType: MealType, recipeId: string | null) => void;
   resetDay: () => void;
   ensureTodayLog: () => void;
   getLogForDate: (date: string) => DailyLog | null;
@@ -34,6 +36,7 @@ export const useMealStore = create<MealStore>()(
     (set, get) => ({
       dailyLog: emptyLog(),
       logHistory: {},
+      activeRecipes: {},
 
       ensureTodayLog: () => {
         const { dailyLog, logHistory } = get();
@@ -120,9 +123,18 @@ export const useMealStore = create<MealStore>()(
             ...state.dailyLog,
             meals: { ...state.dailyLog.meals, [mealType]: null },
           },
+          activeRecipes: { ...state.activeRecipes, [mealType]: undefined },
         })),
 
-      resetDay: () => set({ dailyLog: emptyLog() }),
+      setMealRecipe: (mealType, recipeId) =>
+        set((state) => ({
+          activeRecipes: {
+            ...state.activeRecipes,
+            [mealType]: recipeId ?? undefined,
+          },
+        })),
+
+      resetDay: () => set({ dailyLog: emptyLog(), activeRecipes: {} }),
     }),
     { name: "meal-builder-daily-log" }
   )

@@ -11,6 +11,7 @@ import type { DailyLog } from "@/lib/types";
 import { MealSummaryCard } from "@/components/dashboard/MealSummaryCard";
 import { DailyNutrientChart } from "@/components/dashboard/DailyNutrientChart";
 import { HealthPlanCard } from "@/components/dashboard/HealthPlanCard";
+import { TodayRecipeCard } from "@/components/dashboard/TodayRecipeCard";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -39,7 +40,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { profile, resetProfile } = useProfileStore();
   const _hasHydrated = useProfileStore((s) => s._hasHydrated);
-  const { dailyLog, resetDay, ensureTodayLog, getLogForDate } = useMealStore();
+  const { dailyLog, activeRecipes, resetDay, ensureTodayLog, getLogForDate } = useMealStore();
   const [isSupabasePatient, setIsSupabasePatient] = useState(false);
   const [pinModalOpen, setPinModalOpen] = useState(false);
   const [pinEntry, setPinEntry] = useState("");
@@ -201,6 +202,9 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
+
+        {/* Recipe instructions — only on today, only when recipes are active */}
+        {isToday && <TodayRecipeCard activeRecipes={activeRecipes} />}
 
         {/* Reset day — only on today */}
         {isToday && (
