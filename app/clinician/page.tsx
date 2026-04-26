@@ -20,7 +20,8 @@ export default function ClinicianPage() {
   const { setProfile } = useProfileStore();
 
   const [step, setStep] = useState(0);
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [pin, setPin] = useState("");
   const [restrictions, setRestrictions] = useState<DietaryRestriction[]>([]);
   const [conditionTags, setConditionTags] = useState<string[]>([]);
@@ -43,7 +44,7 @@ export default function ClinicianPage() {
 
   function handleConfirm() {
     const profile: PatientProfile = {
-      name: name.trim(),
+      name: [firstName.trim(), lastName.trim()].filter(Boolean).join(" "),
       pin: pin || undefined,
       restrictions,
       conditionTags,
@@ -54,7 +55,7 @@ export default function ClinicianPage() {
     router.push("/dashboard");
   }
 
-  const profileDraft = { name, pin, restrictions, conditionTags, targets };
+  const profileDraft = { name: [firstName.trim(), lastName.trim()].filter(Boolean).join(" "), pin, restrictions, conditionTags, targets };
 
   return (
     <div className="min-h-screen bg-brand-cream">
@@ -96,9 +97,11 @@ export default function ClinicianPage() {
       <div className="max-w-md mx-auto px-6 py-8">
         {step === 0 && (
           <PatientInfoStep
-            name={name}
+            firstName={firstName}
+            lastName={lastName}
             pin={pin}
-            onChangeName={setName}
+            onChangeFirstName={setFirstName}
+            onChangeLastName={setLastName}
             onChangePin={setPin}
             onNext={() => setStep(1)}
           />

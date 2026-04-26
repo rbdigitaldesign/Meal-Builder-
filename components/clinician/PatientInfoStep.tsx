@@ -4,9 +4,11 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
 interface Props {
-  name: string;
+  firstName: string;
+  lastName: string;
   pin: string;
-  onChangeName: (v: string) => void;
+  onChangeFirstName: (v: string) => void;
+  onChangeLastName: (v: string) => void;
   onChangePin: (v: string) => void;
   onNext: () => void;
 }
@@ -15,20 +17,30 @@ function generatePin(): string {
   return String(Math.floor(1000 + Math.random() * 9000));
 }
 
-export function PatientInfoStep({ name, pin, onChangeName, onChangePin, onNext }: Props) {
+export function PatientInfoStep({ firstName, lastName, pin, onChangeFirstName, onChangeLastName, onChangePin, onNext }: Props) {
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-brand-forest mb-1">Patient Details</h2>
         <p className="text-sm text-stone-500">Enter the patient's name and assign a PIN they'll use to log in on their device.</p>
       </div>
-      <Input
-        label="Patient name"
-        placeholder="e.g. Sarah Mitchell"
-        value={name}
-        onChange={(e) => onChangeName(e.target.value)}
-        autoFocus
-      />
+
+      <div className="grid grid-cols-2 gap-3">
+        <Input
+          label="First name"
+          placeholder="e.g. Sarah"
+          value={firstName}
+          onChange={(e) => onChangeFirstName(e.target.value)}
+          autoFocus
+        />
+        <Input
+          label="Last name"
+          placeholder="e.g. Mitchell"
+          value={lastName}
+          onChange={(e) => onChangeLastName(e.target.value)}
+        />
+      </div>
+
       <div className="space-y-1">
         <div className="flex items-end gap-2">
           <div className="flex-1">
@@ -57,10 +69,10 @@ export function PatientInfoStep({ name, pin, onChangeName, onChangePin, onNext }
           </p>
         )}
       </div>
-      <Button onClick={onNext} disabled={!name.trim()} className="w-full">
+
+      <Button onClick={onNext} disabled={!firstName.trim()} className="w-full">
         Continue
       </Button>
     </div>
   );
 }
-

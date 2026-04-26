@@ -19,7 +19,8 @@ const STEPS = ["Details", "Template", "Restrictions", "Conditions", "Targets", "
 export default function NewClientPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [pin, setPin] = useState("");
   const [restrictions, setRestrictions] = useState<DietaryRestriction[]>([]);
   const [conditionTags, setConditionTags] = useState<string[]>([]);
@@ -46,7 +47,7 @@ export default function NewClientPage() {
 
     const { error } = await supabase.from("clients").insert({
       practitioner_id: user.id,
-      name: name.trim(),
+      name: [firstName.trim(), lastName.trim()].filter(Boolean).join(" "),
       pin: pin || null,
       restrictions,
       targets,
@@ -84,7 +85,7 @@ export default function NewClientPage() {
         </div>
 
         {step === 0 && (
-          <PatientInfoStep name={name} pin={pin} onChangeName={setName} onChangePin={setPin} onNext={() => setStep(1)} />
+          <PatientInfoStep firstName={firstName} lastName={lastName} pin={pin} onChangeFirstName={setFirstName} onChangeLastName={setLastName} onChangePin={setPin} onNext={() => setStep(1)} />
         )}
         {step === 1 && (
           <TemplatePickerStep
@@ -114,7 +115,7 @@ export default function NewClientPage() {
         )}
         {step === 5 && (
           <SetupSummary
-            profile={{ name, pin, restrictions, targets, conditionTags }}
+            profile={{ name: [firstName.trim(), lastName.trim()].filter(Boolean).join(" "), pin, restrictions, targets, conditionTags }}
             onConfirm={handleConfirm}
             onBack={() => setStep(4)}
           />
