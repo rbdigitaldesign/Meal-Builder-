@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="kelly@alchemynaturalhealth.com.au"
+              placeholder="you@example.com"
               autoComplete="email"
               required
             />
