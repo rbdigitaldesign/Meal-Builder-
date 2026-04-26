@@ -33,6 +33,7 @@ export default function ReportPage({ params }: PageProps) {
   const [client, setClient] = useState<ClientRow | null>(null);
   const [logs, setLogs] = useState<MealLogRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const { unit, toggle: toggleUnit, display: displayEnergy } = useEnergyUnit();
 
   useEffect(() => {
     async function load() {
@@ -61,8 +62,6 @@ export default function ReportPage({ params }: PageProps) {
     );
   }
   if (!client) return null;
-
-  const { unit, toggle: toggleUnit, display: displayEnergy } = useEnergyUnit();
 
   const byDate = groupLogsByDate(logs);
   const allDates = Object.keys(byDate).sort();
