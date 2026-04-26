@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Meal Builder — Alchemy Natural Health",
   description: "Build balanced meals that meet your nutritional goals",
   manifest: "/manifest.json",
+  robots: { index: false, follow: false },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
