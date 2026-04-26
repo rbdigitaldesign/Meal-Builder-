@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getDefaultTargets } from "@/data/defaultTargets";
+import { getPresetsForProfile, applyPresetsToTargets } from "@/lib/presets";
 import type { DietaryRestriction, NutritionalTarget } from "@/lib/types";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { PatientInfoStep } from "@/components/clinician/PatientInfoStep";
@@ -18,11 +19,13 @@ const STEPS = ["Details", "Template", "Restrictions", "Conditions", "Targets", "
 export default function NewClientPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [pin, setPin] = useState("");
   const [restrictions, setRestrictions] = useState<DietaryRestriction[]>([]);
   const [conditionTags, setConditionTags] = useState<string[]>([]);
   const [targets, setTargets] = useState<NutritionalTarget[]>(() => getDefaultTargets([]));
+  const [autoPresets, setAutoPresets] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   function handleTemplateApply(templateRestrictions: DietaryRestriction[], templateTargets: NutritionalTarget[]) {
@@ -44,7 +47,7 @@ export default function NewClientPage() {
 
     const { error } = await supabase.from("clients").insert({
       practitioner_id: user.id,
-      name: name.trim(),
+      name: [firstName.trim(), lastName.trim()].filter(Boolean).join(" "),
       pin: pin || null,
       restrictions,
       targets,
@@ -82,7 +85,7 @@ export default function NewClientPage() {
         </div>
 
         {step === 0 && (
-          <PatientInfoStep name={name} pin={pin} onChangeName={setName} onChangePin={setPin} onNext={() => setStep(1)} />
+          <PatientInfoStep firstName={firstName} lastName={lastName} pin={pin} onChangeFirstName={setFirstName} onChangeLastName={setLastName} onChangePin={setPin} onNext={() => setStep(1)} />
         )}
         {step === 1 && (
           <TemplatePickerStep
@@ -95,14 +98,24 @@ export default function NewClientPage() {
           <DietaryRestrictionsStep selected={restrictions} onChange={setRestrictions} onNext={handleRestrictionsNext} onBack={() => setStep(1)} />
         )}
         {step === 3 && (
-          <ConditionTagsStep selected={conditionTags} onChange={setConditionTags} onNext={() => setStep(4)} onBack={() => setStep(2)} />
+          <ConditionTagsStep
+            selected={conditionTags}
+            onChange={setConditionTags}
+            onNext={() => {
+              const presetIds = getPresetsForProfile(conditionTags, restrictions);
+              setAutoPresets(presetIds);
+              if (presetIds.length > 0) setTargets((prev) => applyPresetsToTargets(prev, presetIds));
+              setStep(4);
+            }}
+            onBack={() => setStep(2)}
+          />
         )}
         {step === 4 && (
-          <NutritionalGoalsStep targets={targets} onChange={setTargets} onNext={() => setStep(5)} onBack={() => setStep(3)} />
+          <NutritionalGoalsStep targets={targets} onChange={setTargets} onNext={() => setStep(5)} onBack={() => setStep(3)} initialActivePresets={autoPresets} />
         )}
         {step === 5 && (
           <SetupSummary
-            profile={{ name, pin, restrictions, targets }}
+            profile={{ name: [firstName.trim(), lastName.trim()].filter(Boolean).join(" "), pin, restrictions, targets, conditionTags }}
             onConfirm={handleConfirm}
             onBack={() => setStep(4)}
           />

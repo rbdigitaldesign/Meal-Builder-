@@ -4,19 +4,28 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-const COMMON_CONDITIONS = [
-  "Iron Deficiency Anaemia",
-  "Hypothyroidism",
+const FOCUS_AREAS = [
+  "Immune Support",
+  "Mental Health",
+  "Gut Health",
+  "Bone Health",
+  "Hormone Balance",
+  "Energy & Fatigue",
+];
+
+const CLINICAL_CONDITIONS = [
+  "Menopause",
   "PCOS",
-  "Type 2 Diabetes",
   "Coeliac Disease",
   "Crohn's Disease",
   "IBS",
   "Osteoporosis",
-  "Vegan / B12 Deficiency",
-  "Fatigue / Adrenal Support",
+  "Iron Deficiency Anaemia",
+  "Type 2 Diabetes",
+  "Hypothyroidism",
+  "Endometriosis",
   "Pregnancy",
-  "Menopause",
+  "Vegan / B12 Deficiency",
 ];
 
 interface Props {
@@ -47,23 +56,45 @@ export function ConditionTagsStep({ selected, onChange, onNext, onBack }: Props)
     <div className="space-y-5">
       <div>
         <h2 className="text-xl font-semibold text-brand-forest mb-1">Conditions & Focus Areas</h2>
-        <p className="text-sm text-stone-500">Tag this client's conditions. Used for filtering and reporting.</p>
+        <p className="text-sm text-stone-500">Tag this client's conditions and health focus areas.</p>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {COMMON_CONDITIONS.map((tag) => (
-          <button
-            key={tag}
-            onClick={() => toggle(tag)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-colors ${
-              selected.includes(tag)
-                ? "border-brand-olive bg-brand-olive text-white"
-                : "border-brand-warm bg-white text-stone-600 hover:border-brand-sage"
-            }`}
-          >
-            {tag}
-          </button>
-        ))}
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">Focus Areas</p>
+        <div className="flex flex-wrap gap-2">
+          {FOCUS_AREAS.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => toggle(tag)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-colors ${
+                selected.includes(tag)
+                  ? "border-brand-olive bg-brand-olive text-white"
+                  : "border-brand-warm bg-white text-stone-600 hover:border-brand-sage"
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">Clinical Conditions</p>
+        <div className="flex flex-wrap gap-2">
+          {CLINICAL_CONDITIONS.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => toggle(tag)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-colors ${
+                selected.includes(tag)
+                  ? "border-amber-500 bg-amber-500 text-white"
+                  : "border-amber-200 bg-amber-50 text-amber-800 hover:border-amber-300"
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="flex gap-2">

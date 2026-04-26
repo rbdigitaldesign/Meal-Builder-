@@ -24,7 +24,8 @@ export default function EditClientPage({ params }: PageProps) {
   const [saving, setSaving] = useState(false);
   const [step, setStep] = useState(0);
 
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [pin, setPin] = useState("");
   const [restrictions, setRestrictions] = useState<DietaryRestriction[]>([]);
   const [conditionTags, setConditionTags] = useState<string[]>([]);
@@ -40,7 +41,9 @@ export default function EditClientPage({ params }: PageProps) {
       if (!data) { router.replace("/admin/dashboard"); return; }
 
       const client = data as ClientRow;
-      setName(client.name);
+      const parts = client.name.trim().split(/\s+/);
+      setFirstName(parts[0] ?? "");
+      setLastName(parts.slice(1).join(" "));
       setPin(client.pin ?? "");
       setRestrictions(client.restrictions);
       setConditionTags(client.condition_tags);
@@ -54,7 +57,7 @@ export default function EditClientPage({ params }: PageProps) {
     setSaving(true);
     const supabase = createClient();
     const { error } = await supabase.from("clients").update({
-      name: name.trim(),
+      name: [firstName.trim(), lastName.trim()].filter(Boolean).join(" "),
       pin: pin || null,
       restrictions,
       targets,
@@ -111,9 +114,11 @@ export default function EditClientPage({ params }: PageProps) {
 
         {step === 0 && (
           <PatientInfoStep
-            name={name}
+            firstName={firstName}
+            lastName={lastName}
             pin={pin}
-            onChangeName={setName}
+            onChangeFirstName={setFirstName}
+            onChangeLastName={setLastName}
             onChangePin={setPin}
             onNext={() => setStep(1)}
           />

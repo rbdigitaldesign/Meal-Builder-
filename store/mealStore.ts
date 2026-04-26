@@ -8,33 +8,61 @@ function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function emptyLog(): DailyLog {
+function emptyLog(date?: string): DailyLog {
   return {
-    date: todayStr(),
+    date: date ?? todayStr(),
     meals: { breakfast: null, lunch: null, dinner: null, snack: null },
   };
 }
 
+const MAX_HISTORY_DAYS = 30;
+
 interface MealStore {
   dailyLog: DailyLog;
+  logHistory: Record<string, DailyLog>;
+  activeRecipes: Partial<Record<MealType, string>>;
   addItemToMeal: (mealType: MealType, item: MealItem) => void;
   removeItemFromMeal: (mealType: MealType, foodId: string) => void;
   updateItemPortion: (mealType: MealType, foodId: string, grams: number) => void;
   clearMeal: (mealType: MealType) => void;
+  setMealRecipe: (mealType: MealType, recipeId: string | null) => void;
   resetDay: () => void;
   ensureTodayLog: () => void;
+  getLogForDate: (date: string) => DailyLog | null;
 }
 
 export const useMealStore = create<MealStore>()(
   persist(
     (set, get) => ({
       dailyLog: emptyLog(),
+      logHistory: {},
+      activeRecipes: {},
 
       ensureTodayLog: () => {
-        const { dailyLog } = get();
+        const { dailyLog, logHistory } = get();
         if (dailyLog.date !== todayStr()) {
-          set({ dailyLog: emptyLog() });
+          // Save current day to history if it has any data
+          const hasData = Object.values(dailyLog.meals).some((m) => m && m.items.length > 0);
+          if (hasData) {
+            const updatedHistory = { ...logHistory, [dailyLog.date]: dailyLog };
+            // Prune entries older than MAX_HISTORY_DAYS
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() - MAX_HISTORY_DAYS);
+            const cutoffStr = cutoff.toISOString().slice(0, 10);
+            for (const key of Object.keys(updatedHistory)) {
+              if (key < cutoffStr) delete updatedHistory[key];
+            }
+            set({ dailyLog: emptyLog(), logHistory: updatedHistory });
+          } else {
+            set({ dailyLog: emptyLog() });
+          }
         }
+      },
+
+      getLogForDate: (date: string) => {
+        const { dailyLog, logHistory } = get();
+        if (date === todayStr()) return dailyLog;
+        return logHistory[date] ?? null;
       },
 
       addItemToMeal: (mealType, item) =>
@@ -48,11 +76,7 @@ export const useMealStore = create<MealStore>()(
               ...state.dailyLog,
               meals: {
                 ...state.dailyLog.meals,
-                [mealType]: {
-                  id: mealType,
-                  type: mealType,
-                  items: newItems,
-                },
+                [mealType]: { id: mealType, type: mealType, items: newItems },
               },
             },
           };
@@ -67,10 +91,7 @@ export const useMealStore = create<MealStore>()(
               ...state.dailyLog,
               meals: {
                 ...state.dailyLog.meals,
-                [mealType]: {
-                  ...meal,
-                  items: meal.items.filter((i) => i.food.id !== foodId),
-                },
+                [mealType]: { ...meal, items: meal.items.filter((i) => i.food.id !== foodId) },
               },
             },
           };
@@ -102,9 +123,18 @@ export const useMealStore = create<MealStore>()(
             ...state.dailyLog,
             meals: { ...state.dailyLog.meals, [mealType]: null },
           },
+          activeRecipes: { ...state.activeRecipes, [mealType]: undefined },
         })),
 
-      resetDay: () => set({ dailyLog: emptyLog() }),
+      setMealRecipe: (mealType, recipeId) =>
+        set((state) => ({
+          activeRecipes: {
+            ...state.activeRecipes,
+            [mealType]: recipeId ?? undefined,
+          },
+        })),
+
+      resetDay: () => set({ dailyLog: emptyLog(), activeRecipes: {} }),
     }),
     { name: "meal-builder-daily-log" }
   )

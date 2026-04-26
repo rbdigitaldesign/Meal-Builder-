@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { DietaryRestriction, NutritionalTarget, PatientProfile } from "@/lib/types";
 import { useProfileStore } from "@/store/profileStore";
 import { getDefaultTargets } from "@/data/defaultTargets";
+import { getPresetsForProfile, applyPresetsToTargets } from "@/lib/presets";
 import { PatientInfoStep } from "@/components/clinician/PatientInfoStep";
 import { DietaryRestrictionsStep } from "@/components/clinician/DietaryRestrictionsStep";
 import { ConditionsStep } from "@/components/clinician/ConditionsStep";
@@ -19,11 +20,13 @@ export default function ClinicianPage() {
   const { setProfile } = useProfileStore();
 
   const [step, setStep] = useState(0);
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [pin, setPin] = useState("");
   const [restrictions, setRestrictions] = useState<DietaryRestriction[]>([]);
   const [conditionTags, setConditionTags] = useState<string[]>([]);
   const [targets, setTargets] = useState<NutritionalTarget[]>(() => getDefaultTargets([]));
+  const [autoPresets, setAutoPresets] = useState<string[]>([]);
 
   function handleRestrictionsNext() {
     setTargets(getDefaultTargets(restrictions));
@@ -31,12 +34,17 @@ export default function ClinicianPage() {
   }
 
   function handleConditionsNext() {
+    const presetIds = getPresetsForProfile(conditionTags, restrictions);
+    setAutoPresets(presetIds);
+    if (presetIds.length > 0) {
+      setTargets((prev) => applyPresetsToTargets(prev, presetIds));
+    }
     setStep(3);
   }
 
   function handleConfirm() {
     const profile: PatientProfile = {
-      name: name.trim(),
+      name: [firstName.trim(), lastName.trim()].filter(Boolean).join(" "),
       pin: pin || undefined,
       restrictions,
       conditionTags,
@@ -47,7 +55,7 @@ export default function ClinicianPage() {
     router.push("/dashboard");
   }
 
-  const profileDraft = { name, pin, restrictions, conditionTags, targets };
+  const profileDraft = { name: [firstName.trim(), lastName.trim()].filter(Boolean).join(" "), pin, restrictions, conditionTags, targets };
 
   return (
     <div className="min-h-screen bg-brand-cream">
@@ -89,9 +97,11 @@ export default function ClinicianPage() {
       <div className="max-w-md mx-auto px-6 py-8">
         {step === 0 && (
           <PatientInfoStep
-            name={name}
+            firstName={firstName}
+            lastName={lastName}
             pin={pin}
-            onChangeName={setName}
+            onChangeFirstName={setFirstName}
+            onChangeLastName={setLastName}
             onChangePin={setPin}
             onNext={() => setStep(1)}
           />
@@ -118,6 +128,7 @@ export default function ClinicianPage() {
             onChange={setTargets}
             onNext={() => setStep(4)}
             onBack={() => setStep(2)}
+            initialActivePresets={autoPresets}
           />
         )}
         {step === 4 && (

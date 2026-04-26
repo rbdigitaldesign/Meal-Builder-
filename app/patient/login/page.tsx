@@ -67,7 +67,7 @@ export default function PatientLoginPage() {
             {/* PIN dots display */}
             <div className="flex justify-center gap-4 py-2">
               {[0, 1, 2, 3].map((i) => (
-                <div key={i} className={`w-4 h-4 rounded-full border-2 transition-colors ${
+                <div key={i} className={`w-5 h-5 rounded-full border-2 transition-colors ${
                   i < pin.length ? "bg-brand-olive border-brand-olive" : "border-stone-300"
                 }`} />
               ))}

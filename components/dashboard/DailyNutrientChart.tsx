@@ -18,11 +18,21 @@ export function DailyNutrientChart({ summaries, targets, className }: Props) {
     (s) => targets.find((t) => t.nutrient === s.nutrient)?.priority === "recommended"
   );
 
+  const allZero = summaries.every((s) => s.consumed === 0);
+
   return (
     <Card className={className}>
       <h3 className="font-semibold text-brand-forest mb-4">Today&apos;s Progress</h3>
 
-      {criticals.length > 0 && (
+      {allZero && (
+        <div className="py-6 text-center">
+          <p className="text-2xl mb-2">🥗</p>
+          <p className="text-sm font-medium text-stone-500">Nothing logged yet</p>
+          <p className="text-xs text-stone-400 mt-1">Tap a meal below to start building your plate</p>
+        </div>
+      )}
+
+      {!allZero && criticals.length > 0 && (
         <div className="space-y-4 mb-6">
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Priority targets</p>
           {criticals.map((s) => (
@@ -48,12 +58,12 @@ export function DailyNutrientChart({ summaries, targets, className }: Props) {
         </div>
       )}
 
-      {recommended.length > 0 && (
+      {!allZero && recommended.length > 0 && (
         <div className="space-y-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Other targets</p>
           {recommended.map((s) => (
             <div key={s.nutrient}>
-              <div className="flex justify-between text-xs mb-1">
+              <div className="flex justify-between text-sm mb-1">
                 <span className="text-stone-600">{s.label}</span>
                 <span className="text-stone-400 tabular-nums">
                   {s.consumed}{s.unit} / {s.target}{s.unit}

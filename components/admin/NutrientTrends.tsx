@@ -30,7 +30,7 @@ export function NutrientTrends({ logs, targets }: Props) {
 
     return Object.entries(byDate)
       .sort(([a], [b]) => a.localeCompare(b))
-      .slice(-14) // Last 14 days
+      .slice(-30) // Last 30 days
       .map(([date, dayLogs]) => {
         const allItems = dayLogs.flatMap((l) => l.items);
         const totals = calculateMealTotals(allItems);
@@ -55,7 +55,7 @@ export function NutrientTrends({ logs, targets }: Props) {
 
   return (
     <div className="space-y-6">
-      <h3 className="font-semibold text-brand-forest">Nutrient Trends (last 14 days)</h3>
+      <h3 className="font-semibold text-brand-forest">Nutrient Trends (last 30 days)</h3>
       {criticalTargets.map((target, i) => {
         const nutrient = target.nutrient as NutrientKey;
         return (

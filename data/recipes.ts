@@ -29,7 +29,7 @@ export const RECIPES: Recipe[] = [
   },
   {
     id: "overnight-oats",
-    imageUrl: "https://images.pexels.com/photos/3233281/pexels-photo-3233281.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop",
+    imageUrl: "https://images.pexels.com/photos/5604832/pexels-photo-5604832.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop",
     name: "Overnight Oats with Berries",
     description: "Creamy rolled oats with chia seeds, yoghurt and fresh berries.",
     mealTypes: ["breakfast"],

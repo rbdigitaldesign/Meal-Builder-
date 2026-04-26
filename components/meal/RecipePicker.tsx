@@ -57,7 +57,7 @@ interface Props {
   currentItems: MealItem[];
   dailyLog: DailyLog;
   targets: NutritionalTarget[];
-  onApply: (items: MealItem[]) => void;
+  onApply: (items: MealItem[], recipeId: string) => void;
 }
 
 export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, targets, onApply }: Props) {
@@ -98,7 +98,7 @@ export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, t
       )) return;
     }
 
-    onApply(resolveRecipeItems(recipe));
+    onApply(resolveRecipeItems(recipe), recipe.id);
   }
 
   if (filtered.length === 0) {
@@ -201,9 +201,9 @@ export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, t
                 <p className="text-xs text-stone-400 font-medium uppercase tracking-wide mt-2 mb-1.5">
                   Ingredients
                 </p>
-                <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5">
                   {items.map((item) => (
-                    <span key={item.food.id} className="text-xs text-stone-600">
+                    <span key={item.food.id} className="text-sm text-stone-600">
                       {item.food.name} ({item.portionGrams}g)
                     </span>
                   ))}
@@ -215,16 +215,16 @@ export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, t
                 <div className="px-4 pb-3 border-t border-stone-100">
                   <button
                     onClick={() => toggleInstructions(recipe.id)}
-                    className="flex items-center gap-1.5 text-xs text-brand-olive font-medium mt-2 hover:text-brand-forest transition-colors"
+                    className="flex items-center gap-2 text-sm text-brand-olive font-medium mt-1 hover:text-brand-forest transition-colors min-h-[44px] w-full"
                   >
-                    <span>{expandedInstructions.has(recipe.id) ? "▲" : "▼"}</span>
+                    <span className="text-base leading-none">{expandedInstructions.has(recipe.id) ? "▲" : "▼"}</span>
                     {expandedInstructions.has(recipe.id) ? "Hide instructions" : "How to make this"}
                   </button>
                   {expandedInstructions.has(recipe.id) && (
-                    <ol className="mt-2 space-y-1.5 list-none">
+                    <ol className="mt-1 space-y-2.5 list-none">
                       {recipe.instructions.map((step, i) => (
-                        <li key={i} className="flex gap-2 text-xs text-stone-600">
-                          <span className="flex-shrink-0 w-4 h-4 rounded-full bg-brand-sage/40 text-brand-forest font-semibold text-[10px] flex items-center justify-center mt-0.5">
+                        <li key={i} className="flex gap-2.5 text-sm text-stone-600">
+                          <span className="flex-shrink-0 w-5 h-5 rounded-full bg-brand-sage/40 text-brand-forest font-semibold text-xs flex items-center justify-center mt-0.5">
                             {i + 1}
                           </span>
                           <span>{step}</span>
@@ -239,7 +239,7 @@ export function RecipePicker({ mealType, restrictions, currentItems, dailyLog, t
               <div className="px-4 pb-4">
                 <button
                   onClick={() => handleApply(recipe.id)}
-                  className={`w-full text-white text-sm font-medium py-2 rounded-xl transition-colors ${
+                  className={`w-full text-white text-sm font-medium py-3.5 rounded-xl transition-colors ${
                     overages.length > 0
                       ? "bg-amber-500 hover:bg-amber-600"
                       : "bg-brand-olive hover:bg-brand-forest"

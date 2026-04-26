@@ -16,19 +16,6 @@ interface PageProps {
   params: Promise<{ mealType: string }>;
 }
 
-function syncMeal(mealType: string, items: MealItem[]) {
-  const clientId = typeof window !== "undefined"
-    ? localStorage.getItem("meal-builder-client-id")
-    : null;
-  if (!clientId) return;
-
-  const date = new Date().toISOString().slice(0, 10);
-  fetch("/api/meal-logs", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ clientId, date, mealType, items }),
-  }).catch(() => {});
-}
 
 export default function MealBuilderClient({ params }: PageProps) {
   const { mealType: mealTypeRaw } = use(params);
@@ -36,22 +23,40 @@ export default function MealBuilderClient({ params }: PageProps) {
   const router = useRouter();
 
   const { profile, _hasHydrated } = useProfileStore();
-  const { dailyLog, addItemToMeal, removeItemFromMeal, updateItemPortion, clearMeal } = useMealStore();
+  const { dailyLog, addItemToMeal, removeItemFromMeal, updateItemPortion, clearMeal, setMealRecipe } = useMealStore();
 
   const [activeMode, setActiveMode] = useState<"recipes" | "build">("recipes");
+  const [syncStatus, setSyncStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   const meal = dailyLog.meals[mealType];
   const items = meal?.items ?? [];
 
   // Debounced sync to Supabase via API route
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSupabasePatient = typeof window !== "undefined" && !!localStorage.getItem("meal-builder-client-id");
   useEffect(() => {
+    if (!isSupabasePatient) return;
     if (syncTimer.current) clearTimeout(syncTimer.current);
-    syncTimer.current = setTimeout(() => syncMeal(mealType, items), 1500);
+    setSyncStatus("saving");
+    syncTimer.current = setTimeout(async () => {
+      const clientId = localStorage.getItem("meal-builder-client-id");
+      if (!clientId) return;
+      const date = new Date().toISOString().slice(0, 10);
+      try {
+        const res = await fetch("/api/meal-logs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clientId, date, mealType, items }),
+        });
+        setSyncStatus(res.ok ? "saved" : "error");
+      } catch {
+        setSyncStatus("error");
+      }
+    }, 1500);
     return () => {
       if (syncTimer.current) clearTimeout(syncTimer.current);
     };
-  }, [items, mealType]);
+  }, [items, mealType, isSupabasePatient]);
 
   // Wait for store to rehydrate from localStorage before deciding to redirect
   if (!_hasHydrated) return null;
@@ -69,8 +74,9 @@ export default function MealBuilderClient({ params }: PageProps) {
     removeItemFromMeal(mealType, foodId);
   }
 
-  function handleApplyRecipe(recipeItems: MealItem[]) {
+  function handleApplyRecipe(recipeItems: MealItem[], recipeId: string) {
     clearMeal(mealType);
+    setMealRecipe(mealType, recipeId);
     for (const item of recipeItems) {
       addItemToMeal(mealType, item);
     }
@@ -87,14 +93,18 @@ export default function MealBuilderClient({ params }: PageProps) {
           ← Dashboard
         </Link>
         <h1 className="flex-1 text-center font-semibold text-brand-forest">{label}</h1>
-        {items.length > 0 && (
-          <button
-            onClick={() => clearMeal(mealType)}
-            className="text-xs text-stone-400 hover:text-red-500 transition-colors"
-          >
-            Clear
-          </button>
-        )}
+        {/* Sync status only — Clear moved to bottom to avoid accidental taps */}
+        <div className="w-16 text-right">
+          {isSupabasePatient && syncStatus !== "idle" && (
+            <span className={`text-xs ${
+              syncStatus === "saving" ? "text-stone-400" :
+              syncStatus === "saved"  ? "text-brand-olive" :
+              "text-red-400"
+            }`}>
+              {syncStatus === "saving" ? "Saving…" : syncStatus === "saved" ? "Saved ✓" : "Failed"}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Live daily progress — always visible */}
@@ -107,7 +117,7 @@ export default function MealBuilderClient({ params }: PageProps) {
         <div className="flex rounded-xl bg-stone-100 p-1 gap-1">
           <button
             onClick={() => setActiveMode("recipes")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${
               activeMode === "recipes"
                 ? "bg-white text-brand-forest shadow-sm"
                 : "text-stone-500 hover:text-brand-forest"
@@ -117,7 +127,7 @@ export default function MealBuilderClient({ params }: PageProps) {
           </button>
           <button
             onClick={() => setActiveMode("build")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${
               activeMode === "build"
                 ? "bg-white text-brand-forest shadow-sm"
                 : "text-stone-500 hover:text-brand-forest"
@@ -147,10 +157,20 @@ export default function MealBuilderClient({ params }: PageProps) {
           />
         )}
 
-        <div className="pb-6">
+        <div className="pb-6 space-y-3">
           <Button onClick={() => router.push("/dashboard")} className="w-full">
             Save &amp; Back to Dashboard
           </Button>
+          {items.length > 0 && (
+            <button
+              onClick={() => {
+                if (confirm(`Clear all items from ${label}?`)) clearMeal(mealType);
+              }}
+              className="w-full py-2 text-sm text-red-500 border border-red-200 rounded-xl hover:bg-red-50 transition-colors"
+            >
+              ↺ Clear this meal
+            </button>
+          )}
         </div>
       </div>
     </div>

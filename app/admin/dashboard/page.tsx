@@ -5,9 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { ClientRow } from "@/lib/supabase/types";
+import { getEngagementStatus } from "@/lib/analytics";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+
+const ENGAGEMENT_STYLES = {
+  active:   { dot: "bg-green-400",  label: "Active",    text: "text-green-600"  },
+  quiet:    { dot: "bg-amber-400",  label: "Quiet",     text: "text-amber-600"  },
+  inactive: { dot: "bg-red-400",    label: "Inactive",  text: "text-red-500"    },
+  never:    { dot: "bg-stone-300",  label: "Never logged", text: "text-stone-400" },
+} as const;
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -30,9 +38,19 @@ export default function AdminDashboardPage() {
     load();
   }, [router]);
 
+  const [conditionFilter, setConditionFilter] = useState<string | null>(null);
+
   const active = clients.filter((c) => !c.archived_at);
   const archived = clients.filter((c) => c.archived_at);
-  const shown = showArchived ? archived : active;
+  const baseList = showArchived ? archived : active;
+
+  const allConditionTags = Array.from(
+    new Set(active.flatMap((c) => c.condition_tags))
+  ).sort();
+
+  const shown = conditionFilter
+    ? baseList.filter((c) => c.condition_tags.includes(conditionFilter))
+    : baseList;
 
   async function handleArchive(id: string) {
     if (!confirm("Archive this client? They won't be able to log in.")) return;
@@ -58,20 +76,48 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Toggle archived */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4 flex-wrap">
         <button
-          onClick={() => setShowArchived(false)}
-          className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${!showArchived ? "bg-brand-olive text-white" : "bg-stone-100 text-stone-500"}`}
+          onClick={() => { setShowArchived(false); setConditionFilter(null); }}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors min-h-[40px] ${!showArchived ? "bg-brand-olive text-white" : "bg-stone-100 text-stone-500"}`}
         >
           Active ({active.length})
         </button>
         <button
-          onClick={() => setShowArchived(true)}
-          className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${showArchived ? "bg-brand-olive text-white" : "bg-stone-100 text-stone-500"}`}
+          onClick={() => { setShowArchived(true); setConditionFilter(null); }}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors min-h-[40px] ${showArchived ? "bg-brand-olive text-white" : "bg-stone-100 text-stone-500"}`}
         >
           Archived ({archived.length})
         </button>
       </div>
+
+      {/* Condition tag filters */}
+      {!showArchived && allConditionTags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          <span className="text-xs text-stone-400 self-center">Filter by condition:</span>
+          {allConditionTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => setConditionFilter(conditionFilter === tag ? null : tag)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border min-h-[36px] ${
+                conditionFilter === tag
+                  ? "bg-brand-olive text-white border-brand-olive"
+                  : "bg-white text-stone-600 border-stone-200 hover:border-brand-olive"
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+          {conditionFilter && (
+            <button
+              onClick={() => setConditionFilter(null)}
+              className="text-xs text-stone-400 hover:text-brand-olive transition-colors px-1"
+            >
+              ✕ Clear
+            </button>
+          )}
+        </div>
+      )}
 
       {loading ? (
         <p className="text-stone-400 text-sm">Loading…</p>
@@ -83,35 +129,61 @@ export default function AdminDashboardPage() {
         </Card>
       ) : (
         <div className="space-y-3">
-          {shown.map((client) => (
-            <Card key={client.id} padded={false} className="flex items-center gap-4 px-5 py-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="font-semibold text-brand-black">{client.name}</p>
-                  {client.condition_tags.map((tag) => (
-                    <span key={tag} className="text-xs bg-brand-sage/30 text-brand-forest px-2 py-0.5 rounded-full">{tag}</span>
-                  ))}
+          {shown.map((client) => {
+            const status = getEngagementStatus(client.last_active);
+            const { dot, label, text } = ENGAGEMENT_STYLES[status];
+            return (
+              <Card key={client.id} padded={false} className="px-4 py-4">
+                {/* Row 1: name + engagement badge */}
+                <div className="flex items-start justify-between gap-2 mb-1.5">
+                  <p className="font-semibold text-brand-black leading-snug">{client.name}</p>
+                  <span className={`flex items-center gap-1.5 text-xs font-medium flex-shrink-0 mt-0.5 ${text}`}>
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${dot}`} />
+                    {label}
+                  </span>
                 </div>
-                <div className="flex items-center gap-3 mt-0.5 text-xs text-stone-400">
-                  <span>PIN: <span className="font-mono font-semibold text-stone-600">{client.pin ?? "—"}</span></span>
-                  {client.last_active && (
-                    <span>Last active: {new Date(client.last_active).toLocaleDateString("en-AU")}</span>
-                  )}
-                  <span>Added: {new Date(client.created_at).toLocaleDateString("en-AU")}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Link href={`/admin/clients/${client.id}`}>
-                  <Button variant="secondary" size="sm">View</Button>
-                </Link>
-                {client.archived_at ? (
-                  <Button variant="ghost" size="sm" onClick={() => handleUnarchive(client.id)}>Restore</Button>
-                ) : (
-                  <Button variant="danger" size="sm" onClick={() => handleArchive(client.id)}>Archive</Button>
+
+                {/* Row 2: condition + restriction pills */}
+                {client.condition_tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-2.5">
+                    {client.condition_tags.map((tag) => (
+                      <span key={tag} className="text-xs bg-brand-sage/30 text-brand-forest px-2 py-0.5 rounded-full leading-snug">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 )}
-              </div>
-            </Card>
-          ))}
+
+                {/* Row 3: meta + action buttons */}
+                <div className="flex items-center justify-between gap-3 pt-2 border-t border-stone-100">
+                  <div className="text-xs text-stone-400 space-y-0.5 min-w-0">
+                    <p className="flex items-center gap-1.5">
+                      <span>PIN:</span>
+                      {client.pin
+                        ? <span className="font-mono tracking-widest text-stone-400 select-none">••••</span>
+                        : <span className="text-stone-300 italic">not set</span>
+                      }
+                      <span className="text-stone-300">· View to reveal</span>
+                    </p>
+                    {client.last_active
+                      ? <p>Active: {new Date(client.last_active).toLocaleDateString("en-AU")}</p>
+                      : <p>Added: {new Date(client.created_at).toLocaleDateString("en-AU")}</p>
+                    }
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <Link href={`/admin/clients/${client.id}`}>
+                      <Button variant="secondary" size="md">View</Button>
+                    </Link>
+                    {client.archived_at ? (
+                      <Button variant="ghost" size="md" onClick={() => handleUnarchive(client.id)}>Restore</Button>
+                    ) : (
+                      <Button variant="danger" size="md" onClick={() => handleArchive(client.id)}>Archive</Button>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       )}
     </AdminShell>

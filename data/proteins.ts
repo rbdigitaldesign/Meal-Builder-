@@ -1,4 +1,4 @@
-// Protein foods — nutrition data sourced from vital.ly
+// Protein foods — nutrition data sourced from the Australian Food Composition Database (FSANZ)
 import type { Food } from "@/lib/types";
 
 export const PROTEIN_FOODS: Food[] = [
