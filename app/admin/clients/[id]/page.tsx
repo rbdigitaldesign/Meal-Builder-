@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { requirePractitioner } from "@/lib/supabase/adminAuth";
 import type { ClientRow, MealLogRow, ClinicalNoteRow } from "@/lib/supabase/types";
 import type { NutritionalTarget, DietaryRestriction } from "@/lib/types";
 import { getDefaultTargets } from "@/data/defaultTargets";
@@ -30,8 +31,8 @@ export default function ClientDetailPage({ params }: PageProps) {
   useEffect(() => {
     async function load() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.replace("/admin/login"); return; }
+      const user = await requirePractitioner(supabase, router);
+      if (!user) return;
 
       const [{ data: clientData }, { data: logsData }, { data: notesData }] = await Promise.all([
         supabase.from("clients").select("*").eq("id", id).single(),

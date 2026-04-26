@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { requirePractitioner } from "@/lib/supabase/adminAuth";
 import type { DietaryRestriction, NutritionalTarget } from "@/lib/types";
 import type { ClientRow } from "@/lib/supabase/types";
 import { AdminShell } from "@/components/admin/AdminShell";
@@ -34,8 +35,8 @@ export default function EditClientPage({ params }: PageProps) {
   useEffect(() => {
     async function load() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.replace("/admin/login"); return; }
+      const user = await requirePractitioner(supabase, router);
+      if (!user) return;
 
       const { data } = await supabase.from("clients").select("*").eq("id", id).single();
       if (!data) { router.replace("/admin/dashboard"); return; }

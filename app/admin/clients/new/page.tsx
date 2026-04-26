@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { requirePractitioner } from "@/lib/supabase/adminAuth";
 import { getDefaultTargets } from "@/data/defaultTargets";
 import { getPresetsForProfile, applyPresetsToTargets } from "@/lib/presets";
 import type { DietaryRestriction, NutritionalTarget } from "@/lib/types";
@@ -42,8 +43,8 @@ export default function NewClientPage() {
   async function handleConfirm() {
     setSaving(true);
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.replace("/admin/login"); return; }
+    const user = await requirePractitioner(supabase, router);
+    if (!user) return;
 
     const { error } = await supabase.from("clients").insert({
       practitioner_id: user.id,

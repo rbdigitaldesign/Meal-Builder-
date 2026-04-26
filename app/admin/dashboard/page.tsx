@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { requirePractitioner } from "@/lib/supabase/adminAuth";
 import type { ClientRow } from "@/lib/supabase/types";
 import { getEngagementStatus } from "@/lib/analytics";
 import { AdminShell } from "@/components/admin/AdminShell";
@@ -26,8 +27,8 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     async function load() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.replace("/admin/login"); return; }
+      const user = await requirePractitioner(supabase, router);
+      if (!user) return;
       const { data } = await supabase
         .from("clients")
         .select("*")
