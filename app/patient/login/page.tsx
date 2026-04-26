@@ -28,8 +28,7 @@ export default function PatientLoginPage() {
     });
 
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      setError(body.detail ? `Error: ${body.detail}` : "PIN not recognised. Check with your practitioner.");
+      setError("incorrect");
       setLoading(false);
       return;
     }
@@ -79,13 +78,29 @@ export default function PatientLoginPage() {
               inputMode="numeric"
               maxLength={4}
               value={pin}
-              onChange={(e) => setPin(e.target.value.replace(/\D/g, "").slice(0, 4))}
+              onChange={(e) => { setPin(e.target.value.replace(/\D/g, "").slice(0, 4)); setError(""); }}
               className="w-full text-center text-3xl tracking-[0.5em] font-mono rounded-xl border border-brand-warm px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-olive/50"
               autoFocus
               placeholder="----"
             />
 
-            {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+            {error === "incorrect" && (
+              <div className="text-center space-y-1.5">
+                <p className="text-sm text-red-600 font-medium">Incorrect PIN</p>
+                <p className="text-xs text-stone-500 leading-relaxed">
+                  Can&apos;t remember your PIN?{" "}
+                  <a
+                    href="https://alchemynaturalhealth.com.au/contact"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-olive underline"
+                  >
+                    Contact Kelly
+                  </a>{" "}
+                  to retrieve or reset it.
+                </p>
+              </div>
+            )}
 
             <Button type="submit" className="w-full" disabled={pin.length < 4 || loading}>
               {loading ? "Checking…" : "Enter"}

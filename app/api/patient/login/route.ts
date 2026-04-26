@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     console.error("PIN lookup error:", error.code, error.message);
-    return NextResponse.json({ error: "PIN not recognised.", detail: error.message }, { status: 401 });
+    return NextResponse.json({ error: "PIN not recognised." }, { status: 401 });
   }
 
   if (!data) {
