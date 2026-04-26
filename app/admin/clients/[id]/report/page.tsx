@@ -104,22 +104,22 @@ export default function ReportPage({ params }: PageProps) {
   return (
     <div className="bg-white min-h-screen">
       {/* Print controls — hidden when printing */}
-      <div className="print:hidden bg-stone-50 border-b border-stone-200 px-6 py-3 flex items-center justify-between gap-3">
-        <Link href={`/admin/clients/${id}`} className="text-sm text-brand-olive hover:underline">
+      <div className="print:hidden bg-stone-50 border-b border-stone-200 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+        <Link href={`/admin/clients/${id}`} className="text-sm text-brand-olive hover:underline flex-1 min-w-0 truncate">
           ← Back to {client.name}
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 self-start sm:self-auto">
           <button
             onClick={toggleUnit}
-            className="flex items-center rounded-full border border-stone-300 bg-white text-xs font-medium overflow-hidden"
+            className="flex items-center rounded-full border border-stone-300 bg-white text-xs font-medium overflow-hidden min-h-[36px]"
             title="Switch energy units"
           >
-            <span className={`px-2.5 py-1.5 transition-colors ${unit === "kcal" ? "bg-brand-olive text-white" : "text-stone-400"}`}>kcal</span>
-            <span className={`px-2.5 py-1.5 transition-colors ${unit === "kJ"   ? "bg-brand-olive text-white" : "text-stone-400"}`}>kJ</span>
+            <span className={`px-3 py-2 transition-colors ${unit === "kcal" ? "bg-brand-olive text-white" : "text-stone-400"}`}>kcal</span>
+            <span className={`px-3 py-2 transition-colors ${unit === "kJ"   ? "bg-brand-olive text-white" : "text-stone-400"}`}>kJ</span>
           </button>
           <button
             onClick={() => window.print()}
-            className="bg-brand-olive text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-brand-forest transition-colors"
+            className="bg-brand-olive text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-brand-forest transition-colors whitespace-nowrap min-h-[36px]"
           >
             Print / Save as PDF
           </button>
