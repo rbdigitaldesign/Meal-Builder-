@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 
-export default function AdminLoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -37,6 +37,45 @@ export default function AdminLoginPage() {
   }
 
   return (
+    <>
+      <Card>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <Input
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            autoComplete="email"
+            required
+          />
+          <Input
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Signing in…" : "Sign in"}
+          </Button>
+        </form>
+      </Card>
+
+      <p className="text-center text-xs text-stone-400">
+        Patient?{" "}
+        <a href="/patient/login" className="text-brand-olive hover:underline">
+          Enter your PIN here
+        </a>
+      </p>
+    </>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
     <div className="min-h-screen bg-brand-cream flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="flex flex-col items-center gap-3">
@@ -48,39 +87,9 @@ export default function AdminLoginPage() {
             <p className="text-sm text-stone-500 mt-1">Sign in to manage your clients</p>
           </div>
         </div>
-
-        <Card>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <Input
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              autoComplete="email"
-              required
-            />
-            <Input
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-            />
-            {error && <p className="text-sm text-red-600">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in…" : "Sign in"}
-            </Button>
-          </form>
-        </Card>
-
-        <p className="text-center text-xs text-stone-400">
-          Patient?{" "}
-          <a href="/patient/login" className="text-brand-olive hover:underline">
-            Enter your PIN here
-          </a>
-        </p>
+        <Suspense fallback={null}>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );
