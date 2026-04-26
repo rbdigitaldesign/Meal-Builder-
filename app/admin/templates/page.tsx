@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { requirePractitioner } from "@/lib/supabase/adminAuth";
 import type { ConditionTemplateRow } from "@/lib/supabase/types";
 import type { DietaryRestriction, NutritionalTarget } from "@/lib/types";
 import { NUTRIENT_LABELS } from "@/lib/types";
@@ -33,8 +34,8 @@ export default function TemplatesPage() {
   useEffect(() => {
     async function load() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.replace("/admin/login"); return; }
+      const user = await requirePractitioner(supabase, router);
+      if (!user) return;
       const { data } = await supabase.from("condition_templates").select("*").order("name");
       setTemplates(data ?? []);
       setLoading(false);
@@ -54,7 +55,7 @@ export default function TemplatesPage() {
 
   async function handleSave() {
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await requirePractitioner(supabase, router);
     if (!user) return;
     const payload = { practitioner_id: user.id, name, description: description || null, restrictions, targets };
 
