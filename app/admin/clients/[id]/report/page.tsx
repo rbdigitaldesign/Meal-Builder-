@@ -10,6 +10,7 @@ import type { NutrientKey } from "@/lib/types";
 import { NUTRIENT_LABELS, NUTRIENT_UNITS } from "@/lib/types";
 import { groupLogsByDate, computeWeeklySummary, getTopFoods } from "@/lib/analytics";
 import { calculateMealTotals } from "@/lib/nutrition";
+import { useEnergyUnit } from "@/lib/useEnergyUnit";
 
 interface PageProps { params: Promise<{ id: string }> }
 
@@ -61,6 +62,8 @@ export default function ReportPage({ params }: PageProps) {
   }
   if (!client) return null;
 
+  const { unit, toggle: toggleUnit, display: displayEnergy } = useEnergyUnit();
+
   const byDate = groupLogsByDate(logs);
   const allDates = Object.keys(byDate).sort();
   const recentDates = allDates.slice(-30);
@@ -102,16 +105,26 @@ export default function ReportPage({ params }: PageProps) {
   return (
     <div className="bg-white min-h-screen">
       {/* Print controls — hidden when printing */}
-      <div className="print:hidden bg-stone-50 border-b border-stone-200 px-6 py-3 flex items-center justify-between">
+      <div className="print:hidden bg-stone-50 border-b border-stone-200 px-6 py-3 flex items-center justify-between gap-3">
         <Link href={`/admin/clients/${id}`} className="text-sm text-brand-olive hover:underline">
           ← Back to {client.name}
         </Link>
-        <button
-          onClick={() => window.print()}
-          className="bg-brand-olive text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-brand-forest transition-colors"
-        >
-          Print / Save as PDF
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggleUnit}
+            className="flex items-center rounded-full border border-stone-300 bg-white text-xs font-medium overflow-hidden"
+            title="Switch energy units"
+          >
+            <span className={`px-2.5 py-1.5 transition-colors ${unit === "kcal" ? "bg-brand-olive text-white" : "text-stone-400"}`}>kcal</span>
+            <span className={`px-2.5 py-1.5 transition-colors ${unit === "kJ"   ? "bg-brand-olive text-white" : "text-stone-400"}`}>kJ</span>
+          </button>
+          <button
+            onClick={() => window.print()}
+            className="bg-brand-olive text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-brand-forest transition-colors"
+          >
+            Print / Save as PDF
+          </button>
+        </div>
       </div>
 
       {/* Branded header — full width, prints with background */}
@@ -210,7 +223,7 @@ export default function ReportPage({ params }: PageProps) {
                     <div className="flex justify-between text-sm mb-1.5">
                       <span className="font-medium text-brand-black">{NUTRIENT_LABELS[t.nutrient]}</span>
                       <span className="text-stone-500 tabular-nums text-xs">
-                        avg {avg}{NUTRIENT_UNITS[t.nutrient]} / {t.dailyTarget}{NUTRIENT_UNITS[t.nutrient]} &middot; {pct}% of days met
+                        avg {t.nutrient === "calories" ? `${displayEnergy(avg)} / ${displayEnergy(t.dailyTarget)}` : `${avg}${NUTRIENT_UNITS[t.nutrient]} / ${t.dailyTarget}${NUTRIENT_UNITS[t.nutrient]}`} &middot; {pct}% of days met
                       </span>
                     </div>
                     <div className="w-full h-3 bg-stone-100 rounded-full overflow-hidden">
@@ -248,8 +261,8 @@ export default function ReportPage({ params }: PageProps) {
                   return (
                     <tr key={t.nutrient} className="border-b border-stone-50">
                       <td className="py-2 text-stone-700">{NUTRIENT_LABELS[t.nutrient]}</td>
-                      <td className="py-2 text-right text-stone-500 tabular-nums">{t.dailyTarget}{NUTRIENT_UNITS[t.nutrient]}</td>
-                      <td className="py-2 text-right tabular-nums font-medium text-brand-black">{avg}{NUTRIENT_UNITS[t.nutrient]}</td>
+                      <td className="py-2 text-right text-stone-500 tabular-nums">{t.nutrient === "calories" ? displayEnergy(t.dailyTarget) : `${t.dailyTarget}${NUTRIENT_UNITS[t.nutrient]}`}</td>
+                      <td className="py-2 text-right tabular-nums font-medium text-brand-black">{t.nutrient === "calories" ? displayEnergy(avg) : `${avg}${NUTRIENT_UNITS[t.nutrient]}`}</td>
                       <td className={`py-2 text-right tabular-nums font-medium ${pct >= 90 ? "text-brand-olive" : pct >= 50 ? "text-amber-500" : "text-stone-400"}`}>{pct}%</td>
                     </tr>
                   );

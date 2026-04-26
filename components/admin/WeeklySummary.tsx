@@ -4,6 +4,7 @@ import type { MealLogRow } from "@/lib/supabase/types";
 import type { NutritionalTarget, NutrientKey } from "@/lib/types";
 import { NUTRIENT_LABELS, NUTRIENT_UNITS } from "@/lib/types";
 import { computeWeeklySummary } from "@/lib/analytics";
+import { useEnergyUnit } from "@/lib/useEnergyUnit";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Card } from "@/components/ui/Card";
 
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function WeeklySummary({ logs, targets }: Props) {
+  const { unit, toggle: toggleUnit, display: displayEnergy } = useEnergyUnit();
   const summary = computeWeeklySummary(logs, targets);
   const criticals = targets.filter((t) => t.priority === "critical");
   const recommended = targets.filter((t) => t.priority === "recommended");
@@ -39,7 +41,17 @@ export function WeeklySummary({ logs, targets }: Props) {
     <div className="space-y-4">
       {/* Days logged */}
       <Card>
-        <h3 className="font-semibold text-brand-forest mb-3">This Week at a Glance</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-brand-forest">This Week at a Glance</h3>
+          <button
+            onClick={toggleUnit}
+            className="flex items-center rounded-full border border-brand-warm bg-stone-50 text-xs font-medium overflow-hidden"
+            title="Switch energy units"
+          >
+            <span className={`px-2.5 py-1 transition-colors ${unit === "kcal" ? "bg-brand-olive text-white" : "text-stone-400"}`}>kcal</span>
+            <span className={`px-2.5 py-1 transition-colors ${unit === "kJ"   ? "bg-brand-olive text-white" : "text-stone-400"}`}>kJ</span>
+          </button>
+        </div>
         <div className="flex items-baseline gap-2 mb-2">
           <span className="text-3xl font-bold text-brand-forest">{summary.daysLogged}</span>
           <span className="text-sm text-stone-500">/ 7 days with meals logged</span>
@@ -62,7 +74,10 @@ export function WeeklySummary({ logs, targets }: Props) {
                   <div className="flex justify-between text-sm mb-1">
                     <span className="font-medium text-brand-black">{NUTRIENT_LABELS[t.nutrient]}</span>
                     <span className="text-stone-500 tabular-nums text-xs">
-                      {metDays}/{summary.daysLogged} days met &middot; avg {avg}{NUTRIENT_UNITS[t.nutrient]} / {t.dailyTarget}{NUTRIENT_UNITS[t.nutrient]}
+                      {metDays}/{summary.daysLogged} days met &middot; avg{" "}
+                      {t.nutrient === "calories"
+                        ? `${displayEnergy(avg)} / ${displayEnergy(t.dailyTarget)}`
+                        : `${avg}${NUTRIENT_UNITS[t.nutrient]} / ${t.dailyTarget}${NUTRIENT_UNITS[t.nutrient]}`}
                     </span>
                   </div>
                   <ProgressBar percentage={pct} status={status} />
@@ -110,7 +125,7 @@ export function WeeklySummary({ logs, targets }: Props) {
                 <div key={t.nutrient} className="flex justify-between text-sm">
                   <span className="text-stone-600">{NUTRIENT_LABELS[t.nutrient]}</span>
                   <span className="tabular-nums text-stone-500 text-xs">
-                    avg {avg}{NUTRIENT_UNITS[t.nutrient]} &middot; {pct}% days met
+                    avg {t.nutrient === "calories" ? displayEnergy(avg) : `${avg}${NUTRIENT_UNITS[t.nutrient]}`} &middot; {pct}% days met
                   </span>
                 </div>
               );
