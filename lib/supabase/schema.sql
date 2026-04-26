@@ -55,33 +55,18 @@ alter table public.meal_logs enable row level security;
 alter table public.clinical_notes enable row level security;
 alter table public.condition_templates enable row level security;
 
--- Practitioners only see/edit their own clients
+-- Any user with role=practitioner in app_metadata can manage all clients
 create policy "practitioners_manage_clients" on public.clients
-  for all using (auth.uid() = practitioner_id);
+  for all using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'practitioner');
 
--- Practitioners see meal logs for their clients
 create policy "practitioners_view_meal_logs" on public.meal_logs
-  for all using (
-    exists (
-      select 1 from public.clients
-      where clients.id = meal_logs.client_id
-        and clients.practitioner_id = auth.uid()
-    )
-  );
+  for all using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'practitioner');
 
--- Practitioners manage notes for their clients
 create policy "practitioners_manage_notes" on public.clinical_notes
-  for all using (
-    exists (
-      select 1 from public.clients
-      where clients.id = clinical_notes.client_id
-        and clients.practitioner_id = auth.uid()
-    )
-  );
+  for all using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'practitioner');
 
--- Practitioners manage their own templates
 create policy "practitioners_manage_templates" on public.condition_templates
-  for all using (auth.uid() = practitioner_id);
+  for all using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'practitioner');
 
 -- ── DEFAULT CONDITION TEMPLATES ──────────────────────────────────
 -- Note: Insert these after Kelly signs up — replace '00000000-...' with her auth.uid()
