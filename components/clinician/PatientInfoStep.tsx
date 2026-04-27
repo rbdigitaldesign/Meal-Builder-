@@ -45,14 +45,14 @@ export function PatientInfoStep({ firstName, lastName, pin, onChangeFirstName, o
         <div className="flex items-end gap-2">
           <div className="flex-1">
             <Input
-              label="PIN (optional)"
+              label="PIN"
               type="text"
               inputMode="numeric"
               maxLength={4}
               placeholder="4-digit PIN"
               value={pin}
               onChange={(e) => onChangePin(e.target.value.replace(/\D/g, "").slice(0, 4))}
-              hint="Leave blank to allow open access to settings"
+              hint="Required. The patient will use this 4-digit PIN to log in."
             />
           </div>
           <button
@@ -70,7 +70,7 @@ export function PatientInfoStep({ firstName, lastName, pin, onChangeFirstName, o
         )}
       </div>
 
-      <Button onClick={onNext} disabled={!firstName.trim()} className="w-full">
+      <Button onClick={onNext} disabled={!firstName.trim() || pin.length !== 4} className="w-full">
         Continue
       </Button>
     </div>
